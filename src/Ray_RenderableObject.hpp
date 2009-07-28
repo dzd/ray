@@ -37,6 +37,8 @@ private:
 
 public:
 	Vector(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
+	Vector(Point p1, Point p2);
+
 	Vector(const Vector& v) {x=v.x; y=v.y; z=v.z;}
 	float X() {return x;}
 	float Y() {return y;}
@@ -51,6 +53,8 @@ private:
 public:
 	Ray(Vector & v, Point & o);
 
+	Vector GetVector() { return *v; }
+	Point GetOrigin() { return *o; }
 };
 
 /**
@@ -78,9 +82,8 @@ public:
 	Geometry();
 	
 	// TODO: check if passing by value is the best choice...
-	virtual bool GetIntersection(Ray & r, Point & i);
-	
-	virtual vector<float> GetNormal();
+	virtual bool GetIntersection(Ray & r, Point & i) = 0;
+	virtual Vector GetNormal(Point & p) = 0;
 };
 
 /**
@@ -89,13 +92,13 @@ public:
 class RPoint : public Geometry
 {
 private:
-	int x, y, z;
+	Point * p;
 	
 public:
-	RPoint(int x, int y, int z) {this->x = x; this->y = y; this->z = z;}
+	RPoint(Point & p) {this->p = new Point(p);}
 
 	bool GetIntersection(Ray & r, Point & i);
-	vector<float> GetNormal();
+	Vector GetNormal(Point & p);
 };
 
 class Sphere : public Geometry
