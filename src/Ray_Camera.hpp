@@ -1,6 +1,8 @@
 #ifndef _RAY_Camera_
 #define _RAY_Camera_
 
+#include <list>
+
 #include "Ray_Math.hpp"
 
 /**
@@ -9,19 +11,25 @@
 class Camera
 {
 private:
-	Point 	  *	Origin;
+	Point 	  *	Center;
 	Vector 	  *	Direction;
 	int 		Width;
 	int			Height;
-	list<Point>	screen;
+	list<Point>	Screen;
+	list<Point>::iterator it;
+
+	void InitDefaultScreen();
 
 public:
-	Camera(Point origin, Vector direction, int width, int height);
+	Camera(Point center, Vector direction, int width=640, int height=480);
 
 	void SetDirection(Vector & v);
 	void SetTarget(Point & p);
-	void SetOrigin(Point & p);
+	void SetCenter(Point & p);
 	void SetScreen(int w, int h);
+
+	void InitScreenIterator();
+	bool GetNextRay(Ray * r);
 	
 
 };

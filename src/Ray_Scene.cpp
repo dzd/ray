@@ -6,9 +6,9 @@ using namespace std;
 
 Scene::Scene()
 {
-	c = new Camera(Point(0,0,0), Vector(1,0,0), 640, 480);
+	camera = new Camera(Point(0,0,0), Vector(0,0,1), 5, 5);
 
-	//Temporary hardcoded init of list
+	//Temporary hardcoded init of renderable object list
 	RenderableObject r;
 	ObjectList.push_back(r);
 }
@@ -16,10 +16,20 @@ Scene::Scene()
 void Scene::Render()
 {
 	cout << "Rendering started." << endl;
-	list<RenderableObject>::iterator it = ObjectList.begin();
-	for (;it != ObjectList.end(); it++)
+	
+	Vector v(0,0,1);
+	Point p(0,0,0);
+	Point intersec(0,0,0);
+	Ray * r = new Ray(v, p);
+		
+	while (camera->GetNextRay(r))
 	{
-		cout << "plop" << endl;
+		list<RenderableObject>::iterator it = ObjectList.begin();
+		for (;it != ObjectList.end(); it++)
+		{
+			if (it->geo->GetIntersection(*r, intersec))
+				cout << "Intersection found at: "<< intersec << "for ray: " << *r << endl;
+		}
 	}
 	cout << "Rendering ended." << endl;
 }

@@ -2,11 +2,13 @@ using namespace std;
 
 #include <iostream>
 
-#include "Ray_RenderableObject.hpp"
+#include "Ray_Scene.hpp"
 
 int main()
 {
-	cout << "plop" << endl;
-	
+	Scene s;
+	s.Render();
+
+
 	return 0;
 }
