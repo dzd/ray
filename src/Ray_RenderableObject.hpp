@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Ray_Math.hpp"
+#include "Ray_Color.hpp"
 
 class Geometry;
 class LightProperty;
@@ -17,6 +18,8 @@ class RenderableObject
 {
 protected:
 	bool 			isVisible;
+	Color			color;
+
 public:
 	// temporary public for testing purpose.
 	Geometry 		*geo;
@@ -24,8 +27,9 @@ private:
 	LightProperty 	*lp;
 
 public:
-	RenderableObject();
+	RenderableObject(Color c);
 	void SetVisible(bool v=true) { isVisible = v; }
+	Color& GetColor() {return color;}
 };
 
 
@@ -61,5 +65,6 @@ class Sphere : public Geometry
 
 class Cube : public Geometry
 {};
+
 
 #endif //_RAY_RENDERABLE_OBJ_

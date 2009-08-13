@@ -44,8 +44,8 @@ private:
 public:
 	Ray(Vector & v, Point & o);
 
-	Vector * GetVector() { return v; }
-	Point * GetOrigin() { return o; }
+	Vector* GetVector() { return v; }
+	Point* GetOrigin() { return o; }
 };
 
 /*Global ressources*/

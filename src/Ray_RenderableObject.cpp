@@ -5,9 +5,10 @@ using namespace std;
 #include "Ray_RenderableObject.hpp"
 
 // RenderableObject
-RenderableObject::RenderableObject()
+RenderableObject::RenderableObject(Color c)
 {
 	cout << "RenderableObject constructed." << endl;
+	color = c;
 	Point p = Point(0,0,36);
 	geo = new RPoint(p);
 }
@@ -25,6 +26,7 @@ bool RPoint::GetIntersection(Ray & r, Point & i)
 // Create a vector using ray origin and current point
 	Vector * p_v1 = new Vector(*(r.GetVector()));
 	Vector * p_v2 = new Vector(*(r.GetOrigin()), *Center);
+
 // cross product ray vector and created vector
 	//p_v = cross(r.GetVector(),*p_v);
 	*p_v1 = cross(*p_v1,*p_v2);
