@@ -11,6 +11,5 @@ int main()
 {
 	Scene s;
 	s.Render();
-
 	return 0;
 }

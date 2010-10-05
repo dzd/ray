@@ -41,6 +41,12 @@ Vector::Vector(Point p1, Point p2)
 	z = v.Z();
 }
 
+Vector * Vector::Normed()
+{
+    float sum = x+y+z;
+    return new Vector(x/sum, y/sum, z/sum);
+}
+
 ostream & operator<<(ostream &o, Point  & p) { return o << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")"; }
 ostream & operator<<(ostream &o, Vector & v) { return o << "[" << v.X() << "," << v.Y() << "," << v.Z() << "]"; }
 ostream & operator<<(ostream &o, Ray & r)    { return o << "o:" << *(r.GetOrigin()) << ", v:"<< *(r.GetVector());  }

@@ -60,8 +60,18 @@ public:
 	Vector GetNormal(Point & p);
 };
 
-class Sphere : public Geometry
-{};
+class RSphere : public Geometry
+{
+private:
+    Point * Center;
+    unsigned int      Radius;
+
+public:
+    RSphere(Point &p, unsigned int r);
+
+    bool GetIntersection(Ray & r, Point & i);
+//     Vector GetNormal(Point & p);
+};
 
 class Cube : public Geometry
 {};

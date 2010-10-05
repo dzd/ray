@@ -4,24 +4,23 @@
 class Color 
 {
 public:
-	char r;
-	char g;
-	char b;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
 	
-	Color() { r = (char)0; g = (char)0; b = (char)b;} 
-	Color(char r, char g, char b) {	this->r = r;
-									this->g = g;
-									this->b = b;}
+	Color() { r = 0; g = 0; b = 0;} 
+	Color(unsigned char cr, unsigned char cg, unsigned char cb) {	
+									r = cr;
+									g = cg;
+									b = cb;}
 
-	Color(int r, int g, int b) {	this->r = (char)r;
-									this->g = (char)g;
-									this->b = (char)b;
-	cout << "input: " << r <<" "<< g << " "<< b;
-	cout << "result: " << this->r <<","<< this->g << ","<< this->b << endl;
-}
+	Color(int ir, int ig, int ib) {	r = ir;
+									g = ig;
+									b = ib;
+								  }
 
-	void Show() { cout << (unsigned int)r << ","<< (unsigned int)g << "," << (unsigned int)b <<endl; }
-
+	void Show() { cout <<"|"<<(int)r<<"|"<<(int)g<<"|"<<(int)b<<"|"<<endl; }
 };
+
 
 #endif // _RAY_COLOR_

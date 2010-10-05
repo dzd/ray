@@ -44,3 +44,16 @@ Vector RPoint::GetNormal(Point & p)
 // NA
 }
 // --
+
+RSphere::RSphere(Point &p, unsigned int r)
+{
+    Radius = r;
+    Center = new Point(p);
+}
+
+bool RSphere::GetIntersection(Ray & r, Point & i)
+{
+
+}
+
+

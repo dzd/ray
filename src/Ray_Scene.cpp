@@ -9,7 +9,9 @@ Scene::Scene()
 	camera = new Camera(Point(0,0,0), Vector(0,0,1), 5, 5);
 
 	//Temporary hardcoded init of renderable object list
-	RenderableObject r(Color(255, 0, 0));
+	Color c(120, 125, 128);
+	c.Show();
+	RenderableObject r(c);
 
 	ObjectList.push_back(r);
 }
@@ -36,12 +38,11 @@ void Scene::Render()
 		}
 	}
 	cout << "Rendering ended." << endl;
+	SnapShot("/tmp/plop.bmp");
 }
 
 void Scene::SnapShot(string filename)
 {
-	// test de l'image writer
-	string st = "/tmp/plop.bmp";
-	//BmpWriter plop(st);
-
+	BmpWriter bw(filename, camera->GetWidth(), camera->GetHeight());
 }
+

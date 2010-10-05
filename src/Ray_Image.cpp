@@ -56,38 +56,33 @@ void BmpWriter::printHeader()
 4	00 00 00 00	 0 colors	Number of colors in the palette
 4	00 00 00 00	 0 important colors	Means all colors are important */
 
-	int i;
+	
+	int empty = 0;
+	int headerlenght = 54;
+	int bytestotheendheader = 40;
+	int numberofbitsperpixel = 24;
+	int rawbmpdata =  width * height * numberofbitsperpixel;
+	int imagesize = headerlenght + rawbmpdata;
+	int nbofcolorplane = 1;
+	int pixpermeterH = 2835;
+	int pixpermeterV = 2835;
 	
 	output.write("BM", 2);
-	i = 70;
-	output.write((char*)&i, 4);
-	i = 0;
-	output.write((char*)&i, 2);
-	output.write((char*)&i, 2);
-	i = 54;
-	output.write((char*)&i, 4);
-	i = 40;
-	output.write((char*)&i, 4);
-	i = 2;
-	output.write((char*)&i, 2);
-	i = 2;
-	output.write((char*)&i, 2);
-	i = 1;
-	output.write((char*)&i, 2);
-	i = 24;
-	output.write((char*)&i, 2);
-	i = 0;
-	output.write((char*)&i, 4);
-	i = 16;
-	output.write((char*)&i, 4);
-	i = 2835;
-	output.write((char*)&i, 4);
-	i = 2835;
-	output.write((char*)&i, 4);
-	i = 0;
-	output.write((char*)&i, 4);	
-	i = 0;
-	output.write((char*)&i, 4);	
+	output.write((char*)&imagesize, 4);
+	output.write((char*)&empty, 2);
+	output.write((char*)&empty, 2);
+	output.write((char*)&headerlenght, 4);
+	output.write((char*)&bytestotheendheader, 4);
+	output.write((char*)&width, 2);
+	output.write((char*)&height, 2);
+	output.write((char*)&nbofcolorplane, 2);
+	output.write((char*)&numberofbitsperpixel, 2);
+	output.write((char*)&empty, 4);
+	output.write((char*)&rawbmpdata, 4);
+	output.write((char*)&pixpermeterH, 4);
+	output.write((char*)&pixpermeterV, 4);
+	output.write((char*)&empty, 4);	
+	output.write((char*)&empty, 4);	
 
 }
 void BmpWriter::printBody()
