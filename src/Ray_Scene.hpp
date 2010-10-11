@@ -15,12 +15,14 @@
 class Scene
 {
 private:
-	list<RenderableObject>	ObjectList;
+	list<RenderableObject*>	ObjectList;
 	list<Color>				ColorList;
 	Camera * camera;
 
 public:
 	Scene();
+
+    void GenerateScene();
 
 	void Render();
 

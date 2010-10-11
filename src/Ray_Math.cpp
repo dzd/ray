@@ -10,6 +10,16 @@ float operator*(Vector& v1, Vector &v2)
 	return v1.X()*v2.X() + v1.Y()*v2.Y() + v1.Z()*v2.Z();
 }
 
+float dot(const Vector& v1, const Vector &v2)
+{
+    return v1.X()*v2.X() + v1.Y()*v2.Y() + v1.Z()*v2.Z();
+}
+
+Vector operator*(float f, Vector &v)
+{
+    return Vector(f*v.X(), f*v.Y(), f*v.Z());
+}
+
 Vector operator-(Point & p1, Point & p2)
 {
 	return Vector(p1.X() - p2.X(),
@@ -20,7 +30,7 @@ Vector operator-(Point & p1, Point & p2)
 /**
 * Cross product
 */
-Vector cross(Vector& v1, Vector &v2)
+Vector cross(const Vector& v1, const Vector &v2)
 {
 	return Vector(v1.Y()*v2.Z()-v2.Y()*v1.Z(),
 				  v1.Z()*v2.X()-v2.Z()*v1.X(),
@@ -29,7 +39,7 @@ Vector cross(Vector& v1, Vector &v2)
 
 Ray::Ray(Vector & v, Point & o)
 { 
-	this->v = new Vector(v);
+	this->v = v.Normed();
 	this->o = new Point(o);
 }
 

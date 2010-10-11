@@ -1,6 +1,8 @@
 #ifndef _RAY_RENDERABLE_OBJ_
 #define _RAY_RENDERABLE_OBJ_
 
+#include <math.h>
+
 #include <vector>
 
 #include "Ray_Math.hpp"
@@ -27,7 +29,7 @@ private:
 	LightProperty 	*lp;
 
 public:
-	RenderableObject(Color c);
+	RenderableObject(Color c, Geometry * g);
 	void SetVisible(bool v=true) { isVisible = v; }
 	Color& GetColor() {return color;}
 };
@@ -41,7 +43,7 @@ class Geometry
 public:
 	Geometry() {}
 	
-	virtual bool GetIntersection(Ray & r, Point & i) = 0;
+	virtual bool GetIntersection(Ray & r, float & distance) = 0;
 	virtual Vector GetNormal(Point & p) = 0;
 };
 
@@ -56,7 +58,7 @@ private:
 public:
 	RPoint(Point & p);
 
-	bool GetIntersection(Ray & r, Point & i);
+	bool GetIntersection(Ray & r, float & distance);
 	Vector GetNormal(Point & p);
 };
 
@@ -67,10 +69,10 @@ private:
     unsigned int      Radius;
 
 public:
-    RSphere(Point &p, unsigned int r);
+    RSphere(Point p, unsigned int r);
 
-    bool GetIntersection(Ray & r, Point & i);
-//     Vector GetNormal(Point & p);
+    bool GetIntersection(Ray & r, float & distance);
+    Vector GetNormal(Point & p);
 };
 
 class Cube : public Geometry
