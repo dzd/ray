@@ -25,11 +25,24 @@ protected:
 
 class BmpWriter : public ImageWriter
 {
+private:
+    int linePadding;
+    int empty;
+    int headerlenght;
+    int bytestotheendheader;
+    int numberofbitsperpixel;
+    int rawbmpdata;
+    int imagesize;
+    int nbofcolorplane;
+    int pixpermeterH;
+    int pixpermeterV;
+
 public:	
 	BmpWriter(string f, int width, int height);
 
 protected:
-	virtual void Write();
+    void Init();
+    virtual void Write();
 	virtual void printHeader();
 	virtual void printBody();
 };

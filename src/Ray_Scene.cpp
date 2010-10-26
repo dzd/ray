@@ -6,7 +6,7 @@ using namespace std;
 
 Scene::Scene()
 {
-	camera = new Camera(Point(0,0,0), Vector(0,0,1), 5, 5);
+	camera = new Camera(Point(0,0,0), Vector(0,0,1), 20, 20);
 
     GenerateScene();
     
@@ -41,11 +41,13 @@ void Scene::Render()
 		list<RenderableObject*>::iterator it = ObjectList.begin();
 		for (;it != ObjectList.end(); it++)
 		{
+            distance = 0;
 			if ((*it)->geo->GetIntersection(*r, distance))
 			{
 				cout << "Intersection found at: "<< distance << "for ray: " << *r << endl;
 				(*it)->GetColor().Show();
 			}
+			
 		}
 	}
 	cout << "Rendering ended." << endl;

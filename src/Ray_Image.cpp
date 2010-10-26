@@ -20,7 +20,7 @@ BmpWriter::BmpWriter(string f, int width, int height)
 {
 	if (output.is_open())
 	{
-		Write();
+        Write();
 		output.close();
 	}
 	else
@@ -28,10 +28,31 @@ BmpWriter::BmpWriter(string f, int width, int height)
 }
 
 /**
+ * init method
+ */
+void BmpWriter::Init()
+{
+    empty = 0;
+    headerlenght = 54;
+    bytestotheendheader = 40;
+    numberofbitsperpixel = 24;
+    linePadding = (32 - (numberofbitsperpixel * width % 32)) % 32;
+    cout << "line padding: " << linePadding << endl;
+    rawbmpdata =  (height * (numberofbitsperpixel * width + linePadding)) / 8;
+    cout << "raw bmp data: " << rawbmpdata << endl;
+    imagesize = headerlenght + rawbmpdata ;
+    cout << "image size: " << imagesize << endl;
+    nbofcolorplane = 1;
+    pixpermeterH = 2835;
+    pixpermeterV = 2835;
+}
+
+/**
 * Main method 
 */
 void BmpWriter::Write()
 {
+    Init();
 	printHeader();
 	printBody();
 }
@@ -56,38 +77,44 @@ void BmpWriter::printHeader()
 4	00 00 00 00	 0 colors	Number of colors in the palette
 4	00 00 00 00	 0 important colors	Means all colors are important */
 
-	
-	int empty = 0;
-	int headerlenght = 54;
-	int bytestotheendheader = 40;
-	int numberofbitsperpixel = 24;
-	int rawbmpdata =  width * height * numberofbitsperpixel;
-	int imagesize = headerlenght + rawbmpdata;
-	int nbofcolorplane = 1;
-	int pixpermeterH = 2835;
-	int pixpermeterV = 2835;
-	
-	output.write("BM", 2);
-	output.write((char*)&imagesize, 4);
-	output.write((char*)&empty, 2);
-	output.write((char*)&empty, 2);
-	output.write((char*)&headerlenght, 4);
-	output.write((char*)&bytestotheendheader, 4);
-	output.write((char*)&width, 2);
-	output.write((char*)&height, 2);
-	output.write((char*)&nbofcolorplane, 2);
-	output.write((char*)&numberofbitsperpixel, 2);
-	output.write((char*)&empty, 4);
-	output.write((char*)&rawbmpdata, 4);
-	output.write((char*)&pixpermeterH, 4);
-	output.write((char*)&pixpermeterV, 4);
-	output.write((char*)&empty, 4);	
-	output.write((char*)&empty, 4);	
+  output.write("BM", 2);
+  output.write((char*)&imagesize, 4);
+  output.write((char*)&empty, 2);
+  output.write((char*)&empty, 2);
+  output.write((char*)&headerlenght, 4);
+  output.write((char*)&bytestotheendheader, 4);
+  output.write((char*)&width, 4);
+  output.write((char*)&height, 4);
+  output.write((char*)&nbofcolorplane, 2);
+  output.write((char*)&numberofbitsperpixel, 2);
+  output.write((char*)&empty, 4);
+  output.write((char*)&rawbmpdata, 4);
+  output.write((char*)&pixpermeterH, 4);
+  output.write((char*)&pixpermeterV, 4);
+  output.write((char*)&empty, 4);
+  output.write((char*)&empty, 4);
 
 }
+
 void BmpWriter::printBody()
 {
-
-
+    unsigned int r,g,b;
+    for(int j = 0; j < height; j++)
+    {
+        for(int i = 0; i < width; i++)
+        {
+            r = i*i;
+            g = j*j;
+            b = 255;
+            //cout <<"r"<< r <<"g"<< g <<"b"<< b;
+            output << (unsigned char)r << (unsigned char)g << (unsigned char)b;
+            /*
+             output.write((char*)&r, 1);
+             output.write((char*)&g, 1);
+             output.write((char*)&b, 1);*/
+        }
+        for(int i = 0; i < linePadding; i++)
+        { output << (unsigned char)0; }
+    }
 }
 

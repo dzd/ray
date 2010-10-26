@@ -15,7 +15,7 @@ private:
 	Point 	  *	Center;
 	Vector 	  *	Direction;
 	int 		Width;
-	int			Height;
+	int         Height;
 	list<Point>	Screen;
 	list<Point>::iterator it;
 
