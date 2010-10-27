@@ -25,7 +25,7 @@ void Camera::InitDefaultScreen()
 	{
 		for(int i = 0; i < Width; i++)
 		{
-			Screen.push_back(Point(i, j, 0));
+			Screen.push_back(ScreenPoint(i, j, 0));
 		}
 	}
 
@@ -68,19 +68,42 @@ void Camera::InitScreenIterator()
 
 
 /**
+ * Dump the screen internal struct to a list of color usable by the image writer
+ */
+void Camera::DumpRawImage()
+{
+    
+
+}
+
+
+/**
  *  This method returns true is a new ray is available.
  *  The new Ray is available thru the reference parameter 
  */
 bool Camera::GetNextRay(Ray * r)
 {
-	if (it != Screen.end())
-	{
-		delete r;
-		r = new Ray(*Direction, *it);
-		it++;
-		return true;
-	}
-	return false;
+    if (it != Screen.end())
+    {
+        delete r;
+        r = new Ray(*Direction, *it);
+        it++;
+        return true;
+    }
+    return false;
 }
 
-
+/**
+ *
+ */
+bool Camera::GetNextScreenPoint(ScreenPoint * sp)
+{
+    if (it != Screen.end())
+    {
+        //r = new Ray(*Direction, *it);
+        sp = new ScreenPoint(*it);
+        it++;
+        return true;
+    }
+    return false;
+}

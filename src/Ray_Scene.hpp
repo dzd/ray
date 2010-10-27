@@ -25,6 +25,7 @@ public:
     void GenerateScene();
 
 	void Render();
+    void Render2();
 
 	void SnapShot(string filename);
 };

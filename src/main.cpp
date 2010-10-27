@@ -9,7 +9,8 @@ using namespace std;
 
 int main()
 {
-	Scene s;
-	s.Render();
-	return 0;
+    Scene s;
+    //s.Render();
+    s.Render2();
+    return 0;
 }

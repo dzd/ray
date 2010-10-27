@@ -108,10 +108,7 @@ void BmpWriter::printBody()
             b = 255;
             //cout <<"r"<< r <<"g"<< g <<"b"<< b;
             output << (unsigned char)r << (unsigned char)g << (unsigned char)b;
-            /*
-             output.write((char*)&r, 1);
-             output.write((char*)&g, 1);
-             output.write((char*)&b, 1);*/
+
         }
         for(int i = 0; i < linePadding; i++)
         { output << (unsigned char)0; }

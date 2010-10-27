@@ -37,10 +37,19 @@ Vector cross(const Vector& v1, const Vector &v2)
  				  v1.X()*v2.Y()-v2.X()*v1.Y());
 }
 
+
+// TODO: suppress this consructor (replaced by the const one)
 Ray::Ray(Vector & v, Point & o)
 { 
-	this->v = v.Normed();
-	this->o = new Point(o);
+    this->v = v.Normed();
+    this->o = new Point(o);
+}
+
+Ray::Ray(const Vector & v, const Point & o)
+{
+    Vector vcopy(v);
+    this->v = vcopy.Normed();
+    this->o = new Point(o);
 }
 
 Vector::Vector(Point p1, Point p2)

@@ -5,16 +5,21 @@
 
 class Point
 {
-private:
+protected:
 	float x, y, z;
 
 public:
 	Point(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
 	Point(const Point & p) {x=p.x; y=p.y; z=p.z;}
 
+//TODO: remove non const call of those getter
 	float X() {return x;}
 	float Y() {return y;}
 	float Z() {return z;}
+
+    float X() const {return x;}
+    float Y() const {return y;}
+    float Z() const {return z;}
 
 };
 
@@ -41,13 +46,14 @@ public:
 class Ray
 {
 private:
-	Vector *v;
-	Point  *o;
+    Vector *v;
+    Point  *o;
 public:
-	Ray(Vector & v, Point & o);
+    Ray(Vector & v, Point & o);
+    Ray(const Vector & v, const Point & o);
 
-	Vector* GetVector() { return v; }
-	Point* GetOrigin() { return o; }
+    Vector * GetVector() { return v; }
+    Point * GetOrigin() { return o; }
 };
 
 /*Global ressources*/
