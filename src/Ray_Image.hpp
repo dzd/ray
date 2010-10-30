@@ -2,8 +2,11 @@
 #define _RAY_IMAGE_
 
 #include <string>
+#include <list>
 #include <iostream>
 #include <fstream>
+
+#include "Ray_Color.hpp"
 
 class ImageWriter
 {
@@ -11,9 +14,10 @@ protected:
 	ofstream	output;
 	int			width,
 				height;
+    list<Color> rawImage;
 
 public:
-	ImageWriter(string f, int width, int height);
+	ImageWriter(string f, int width, int height, list<Color> rawImage);
 
 protected:
 	virtual void Write() = 0;
@@ -38,7 +42,7 @@ private:
     int pixpermeterV;
 
 public:	
-	BmpWriter(string f, int width, int height);
+	BmpWriter(string f, int width, int height, list<Color> rawImage);
 
 protected:
     void Init();

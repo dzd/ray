@@ -4,6 +4,7 @@ using namespace std;
 
 Camera::Camera(Point center, Vector direction, int width, int height)
 {
+    maxDistance = 100000;
 	SetCenter(center);
 	SetDirection(direction);
 	SetScreen(width, height);
@@ -68,16 +69,6 @@ void Camera::InitScreenIterator()
 
 
 /**
- * Dump the screen internal struct to a list of color usable by the image writer
- */
-void Camera::DumpRawImage()
-{
-    
-
-}
-
-
-/**
  *  This method returns true is a new ray is available.
  *  The new Ray is available thru the reference parameter 
  */
@@ -94,16 +85,46 @@ bool Camera::GetNextRay(Ray * r)
 }
 
 /**
- *
+ * This method return current screenPoint
  */
-bool Camera::GetNextScreenPoint(ScreenPoint * sp)
+ScreenPoint * Camera::GetNextScreenPoint()
 {
+    ScreenPoint * sp = NULL;
+    
     if (it != Screen.end())
     {
-        //r = new Ray(*Direction, *it);
-        sp = new ScreenPoint(*it);
+        sp = &(*it);
+        //cout << "sp in GetNextScreenpoint" << sp << endl;
         it++;
-        return true;
     }
-    return false;
+    return sp;
 }
+
+
+
+
+/**
+ * Dump the screen internal struct to a list of color usable by the image writer
+ */
+void Camera::DumpRawImage()
+{
+    list<ScreenPoint>::iterator itdump      = Screen.begin();
+    list<ScreenPoint>::iterator itdump_end  = Screen.end();
+
+
+    for(;itdump!=itdump_end;itdump++)
+    {
+        rawImage.push_back(itdump->GetColor());
+    }
+    cout << "Dump into raw image completed: unmber of pixel:" << rawImage.size() << endl;
+}
+
+/**
+ * Return a copy of a raw image seen by the camera
+ **/
+list<Color> Camera::GetRawImage()
+{
+    DumpRawImage();
+    return rawImage;
+}
+

@@ -5,8 +5,9 @@ using namespace std;
 /**
 * Base class for image writer...
 */
-ImageWriter::ImageWriter(string f, int width, int height)
+ImageWriter::ImageWriter(string f, int width, int height,list<Color> rawImage)
 {
+    this->rawImage = rawImage;
 	output.open(f.c_str(), ios::binary | ios::out);
 	this->width = width;
 	this->height = height;
@@ -15,8 +16,8 @@ ImageWriter::ImageWriter(string f, int width, int height)
 /**
 * BmpWriter: base class for output to image file
 */
-BmpWriter::BmpWriter(string f, int width, int height)
-		 : ImageWriter(f, width, height)
+BmpWriter::BmpWriter(string f, int width, int height, list<Color> rawImage)
+		 : ImageWriter(f, width, height, rawImage)
 {
 	if (output.is_open())
 	{
@@ -98,16 +99,24 @@ void BmpWriter::printHeader()
 
 void BmpWriter::printBody()
 {
-    unsigned int r,g,b;
+    //unsigned int r,g,b;
+
+    list<Color>::iterator raw_it     = rawImage.begin();
+    list<Color>::iterator raw_it_end = rawImage.end();
+    
     for(int j = 0; j < height; j++)
     {
         for(int i = 0; i < width; i++)
         {
-            r = i*i;
-            g = j*j;
-            b = 255;
-            //cout <<"r"<< r <<"g"<< g <<"b"<< b;
-            output << (unsigned char)r << (unsigned char)g << (unsigned char)b;
+            
+//             r = i*i;
+//             g = j*j;
+//             b = 255;
+            
+            //cout <<"r"<< (int)raw_it->r <<"g"<< (int)raw_it->g <<"b"<< (int)raw_it->b;
+            output << raw_it->r << raw_it->g << raw_it->b;
+            raw_it++;
+            //output << (unsigned char)0 << (unsigned char)0 << (unsigned char)0;
 
         }
         for(int i = 0; i < linePadding; i++)

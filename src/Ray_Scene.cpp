@@ -63,10 +63,10 @@ void Scene::Render2()
     Ray * r = new Ray(v, p);
     ScreenPoint * sp = NULL;
 
-    while ( (camera->GetNextScreenPoint(sp)))
+    while ( (sp = camera->GetNextScreenPoint()) != NULL )
     {
-        cout << "sp" << endl;
-        cout << "sp->GetDistance()" << sp->GetDistance() << endl;
+        //cout << "sp" << sp << endl;
+        //cout << "sp->GetDistance()" << sp->GetDistance() << endl;
         delete r;
         //r = new Ray(camera->GetDirection(), sp->GetPoint());
         r = new Ray(camera->GetDirection(), *sp);
@@ -77,11 +77,13 @@ void Scene::Render2()
             distance = -1;
             if ((*it)->geo->GetIntersection(*r, distance))
             {
+                cout << "Intersection found at distance: " << distance << endl;
                 if (distance > 0 && distance < sp->GetDistance() )
                 {
                     cout << "Closer intersection found at: "<< distance << "for ray: " << *r << endl;
                     sp->SetDistance(distance);
                     sp->SetColor( (*it)->GetColor() );
+                    //(*it)->GetColor().Show();
                 }
             }
         }
@@ -93,6 +95,7 @@ void Scene::Render2()
 
 void Scene::SnapShot(string filename)
 {
-    BmpWriter bw(filename, camera->GetWidth(), camera->GetHeight());
+    list<Color> lc = camera->GetRawImage();
+    BmpWriter bw(filename, camera->GetWidth(), camera->GetHeight(), lc);
 }
 

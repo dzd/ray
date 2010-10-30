@@ -22,6 +22,8 @@ private:
     list<ScreenPoint>   Screen;
     list<ScreenPoint>::iterator it;
 
+    int maxDistance;
+
     list<Color> rawImage;
 
     void InitDefaultScreen();
@@ -43,8 +45,9 @@ public:
 
     void InitScreenIterator();
     bool GetNextRay(Ray * r);
-    //ScreenPoint & GetNextScreenPoint();
-    bool GetNextScreenPoint(ScreenPoint * sp);
+    ScreenPoint * GetNextScreenPoint();
+
+    list<Color> GetRawImage();
 };
 /**
 * This Class derives from the math Point class defined in Ray_Math.hpp
@@ -57,10 +60,10 @@ private:
     int distance;
 
 public:
-    ScreenPoint(float x, float y, float z) : Point(x, y, z) {c = new Color(0,0,0); distance = -1;}
+    ScreenPoint(float x, float y, float z) : Point(x, y, z) {c = new Color(0,0,0); distance = 100000;}
     ScreenPoint(const Point & p) : Point(p) {}
     ScreenPoint(const ScreenPoint & sp) : Point (0,0,0) {x = sp.X(); y = sp.Y(); z = sp.Z();
-                                                        distance = sp.distance;
+                                                        distance = sp.GetDistance();
                                                         c = new Color(sp.GetColor());}
 
     void SetColor(const Color & color)  { c = new Color(color); }
@@ -69,7 +72,7 @@ public:
     Color GetColor() const { return Color(*c); }
 
     void SetDistance(int d) { distance = d; }
-    int GetDistance()       { return distance; }
+    int GetDistance() const { return distance; }
 
     //friend ostream & operator<<(ostream & o, ScreenPoint & sp) {return o << "d:"<<sp.distance<<",color:"<<sp.c->Show();}
 };
