@@ -103,21 +103,14 @@ void BmpWriter::printBody()
 
     list<Color>::iterator raw_it     = rawImage.begin();
     list<Color>::iterator raw_it_end = rawImage.end();
-    
+
     for(int j = 0; j < height; j++)
     {
         for(int i = 0; i < width; i++)
         {
-            
-//             r = i*i;
-//             g = j*j;
-//             b = 255;
-            
-            //cout <<"r"<< (int)raw_it->r <<"g"<< (int)raw_it->g <<"b"<< (int)raw_it->b;
-            output << raw_it->r << raw_it->g << raw_it->b;
+            // order of color in bmp is bgr
+            output << raw_it->b << raw_it->g << raw_it->r;
             raw_it++;
-            //output << (unsigned char)0 << (unsigned char)0 << (unsigned char)0;
-
         }
         for(int i = 0; i < linePadding; i++)
         { output << (unsigned char)0; }

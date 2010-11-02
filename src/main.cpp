@@ -10,7 +10,6 @@ using namespace std;
 int main()
 {
     Scene s;
-    //s.Render();
-    s.Render2();
+    s.Render();
     return 0;
 }

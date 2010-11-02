@@ -8,6 +8,7 @@
 #include "Ray_Camera.hpp"
 #include "Ray_Image.hpp"
 #include "Ray_Color.hpp"
+#include "Ray_Light.hpp"
 
 /**
  * Main class of raytracer
@@ -15,19 +16,18 @@
 class Scene
 {
 private:
-	list<RenderableObject*>	ObjectList;
-	list<Color>				ColorList;
-	Camera * camera;
+    list<RenderableObject*> ObjectList;
+    list<Light>             LightList;
+    Camera * camera;
 
 public:
-	Scene();
+    Scene();
 
     void GenerateScene();
 
-	void Render();
-    void Render2();
+    void Render();
 
-	void SnapShot(string filename);
+    void SnapShot(string filename);
 };
 
 #endif // _RAY_SCENE_
