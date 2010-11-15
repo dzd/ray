@@ -1,31 +1,30 @@
 #ifndef _RAY_COLOR_
 #define _RAY_COLOR_
 
+#include <iostream>
+
 class Color 
 {
+protected:
+    void Normalize();
+
 public:
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-	
-	Color() { r = 0; g = 0; b = 0;} 
-	Color(unsigned char cr, unsigned char cg, unsigned char cb) {	
-                                    r = cr;
-                                    g = cg;
-                                    b = cb;}
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
 
-	Color(int ir, int ig, int ib) { r = ir;
-                                    g = ig;
-                                    b = ib;
-                                  }
+    Color();
+    Color(unsigned char cr, unsigned char cg, unsigned char cb);
+    Color(int ir, int ig, int ib);
+    Color(const Color & c);
 
-    Color(const Color & c) { r = c.r;
-                             g = c.g;
-                             b = c.b;
-                           }
+    void Add   (const Color & c);
+    void Minus (const Color & c);
 
-	void Show() { cout <<"|"<<(int)r<<"|"<<(int)g<<"|"<<(int)b<<"|"<<endl; }
+    void Show();
 };
+
+ostream & operator<<(ostream &o, Color & c);
 
 
 #endif // _RAY_COLOR_

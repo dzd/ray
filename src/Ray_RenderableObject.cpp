@@ -4,18 +4,20 @@ using namespace std;
 
 #include "Ray_RenderableObject.hpp"
 
-// RenderableObject
+//---- RenderableObject
+// init of static RenderableObject properties
+int RenderableObject::id = 0;
+
 RenderableObject::RenderableObject(Color c, Geometry * g)
 {
-	cout << "RenderableObject constructed." << endl;
-	color = c;
-	// Point p = Point(0,0,36);
-	// geo = new RPoint(p);
+    SetId();
+    cout << "RenderableObject constructed, id: "<< object_id << endl;
+    color = c;
     geo = g;
 }
 
 
-// RPoint implementation
+//---- RPoint
 RPoint::RPoint(Point & p)
 {
 	Center = new Point(p);
@@ -25,28 +27,28 @@ RPoint::RPoint(Point & p)
 bool RPoint::GetIntersection(Ray & r, float & distance)
 {
 // Create a vector using ray origin and current point
-	Vector * p_v1 = new Vector(*(r.GetVector()));
-	Vector * p_v2 = new Vector(*(r.GetOrigin()), *Center);
+    Vector * p_v1 = new Vector(*(r.GetVector()));
+    Vector * p_v2 = new Vector(*(r.GetOrigin()), *Center);
 
-// cross product ray vector and created vector
-	//p_v = cross(r.GetVector(),*p_v);
-	*p_v1 = cross(*p_v1,*p_v2);
-//if result is null the ray intersect the point
-	if ( p_v1->X() == 0 && p_v1->Y() == 0 && p_v1->Z() == 0)
-	{	
-		//i = *Center;
-		//temporary return a fix distance
-		distance = 1;
-		return true;
-	}
-	return false;
+    // cross product ray vector and created vector
+    //p_v = cross(r.GetVector(),*p_v);
+    *p_v1 = cross(*p_v1,*p_v2);
+    //if result is null the ray intersect the point
+    if ( p_v1->X() == 0 && p_v1->Y() == 0 && p_v1->Z() == 0)
+    {
+        //i = *Center;
+        //temporary return a fix distance
+        distance = 1;
+        return true;
+    }
+    return false;
 }
 
 Vector RPoint::GetNormal(Point & p)
 {
-// NA
+    return Vector(0,0,0);
 }
-// --
+
 
 RSphere::RSphere(Point p, unsigned int r)
 {
@@ -57,7 +59,10 @@ RSphere::RSphere(Point p, unsigned int r)
 bool RSphere::GetIntersection(Ray & r, float & distance)
 {
     // float a;
-    float b,c, deltabis;
+    double b,c, deltabis;
+    double s1,s2;
+
+
     Point o = *(r.GetOrigin());
     Vector d = *(r.GetVector());
     Vector tmp = o - *Center;
@@ -68,20 +73,50 @@ bool RSphere::GetIntersection(Ray & r, float & distance)
 
     deltabis = b * b - c;
 
-    if (deltabis >  0)
+    if (deltabis <  0)
     {
-        // on retourne la distance
-         distance = - b - sqrt(deltabis);
+        return false;
+    }
+
+    // on retourne la distance
+    s1 = - b - sqrt(deltabis);
+    s2 = - b + sqrt(deltabis);
+
+    if(s1 > 0.1)// and s1 < s2 )
+    {
+        distance = s1;
         return true;
     }
-    else
-        return false;
+    if(s2 > 0.1)
+    {
+        distance = s2;
+        return true;
+    }
+    return false;
 }
 
 Vector RSphere::GetNormal(Point & p)
 {
-    return Vector(0,0,1);
+    return Vector(*Center, p);
 }
 
+//----- RPlan
+
+RPlan::RPlan(const Point o, const Vector vnormal)
+{
+    origin = new Point(o);
+    this->vnormal = new Vector(vnormal);
+}
+
+bool RPlan::GetIntersection(Ray & r, float & distance)
+{
+    
+}
+
+
+Vector RPlan::GetNormal(Point & p)
+{
+    return Vector(0,0,0);
+}
 
 

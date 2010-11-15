@@ -6,7 +6,7 @@ using namespace std;
 
 Scene::Scene()
 {
-	camera = new Camera(Point(0,0,0), Vector(0,0,1), 600, 480);
+	camera = new Camera(Point(0,0,0), Vector(0,0,1), 640, 480);
 
     GenerateScene();
     
@@ -19,24 +19,27 @@ void Scene::GenerateScene()
 {
     RenderableObject * r;
 
-
-    Color c2(255, 0, 0);
-    r = new RenderableObject(c2, new RSphere(Point(100,100,190), 166));
-    ObjectList.push_back(r);
-
-
-    Color c3(0, 0, 255);
-    r = new RenderableObject(c3, new RSphere(Point(600,380,170), 166));
+    Color c1(255, 0, 0);
+    r = new RenderableObject(c1, new RSphere(Point(500,330,800), 130));
     ObjectList.push_back(r);
 
     //Temporary hardcoded init of renderable object list
-     Color c(0, 255, 0);
-     c.Show();
-     r = new RenderableObject(c, new RSphere(Point(300,240,300), 200));
-     ObjectList.push_back(r);
+    Color c(0, 255, 0);
+    r = new RenderableObject(c, new RSphere(Point(180,150,400), 130));
+    ObjectList.push_back(r);
 
-     // Append a new light to the scene
-    Light l = Light(Point(600,380,50), Color(255,255,255));
+    Color c3(0, 0, 255);
+    r = new RenderableObject(c3, new RSphere(Point(320,240,600), 200));
+    ObjectList.push_back(r);
+
+
+    Color c4(255, 0, 0);
+    Point p4(0,200,150);
+    r = new RenderableObject(c3, new RPoint(p4));
+    ObjectList.push_back(r);
+
+    // Append a new light to the scene
+    Light l = Light(p4, Color(255,255,255));
     LightList.push_back(l);
 }
 
@@ -52,7 +55,7 @@ void Scene::Render()
     Point p(0,0,0);
 
     Point intersec(0,0,0);
-    float distance, distance2;
+    float d,distance, distance2;
     bool pixelInShadow;
     Ray * r = new Ray(v, p);
     ScreenPoint * sp = NULL;
@@ -63,69 +66,91 @@ void Scene::Render()
         r = new Ray(camera->GetDirection(), *sp);
 
         list<RenderableObject*>::iterator it = ObjectList.begin();
-        list<RenderableObject*>::iterator it_intersection_obj;
+        RenderableObject* last_intersection_obj;
+        distance = -1;
         for (;it != ObjectList.end(); it++)
         {
-            distance = -1;
-            if ((*it)->geo->GetIntersection(*r, distance))
+            if ((*it)->geo->GetIntersection(*r, d))
             {
-                //cout << "Intersection found at distance: " << distance << endl;
-                if (distance > 0 && distance < sp->GetDistance() )
+                //cout << "Intersection found at distance: " << d << endl;
+                if (d > 0 and d < sp->GetDistance() )
                 {
-                    //cout << "Closer intersection found at: "<< distance << "for ray: " << *r << endl;
+                    distance = d;
+                    Color i_color = (*it)->GetColor();
+//                     cout << "Closer intersection found at: "<< distance << " for ray: " << *r << " color:" << i_color << endl;
                     sp->SetDistance(distance);
-                    sp->SetColor( (*it)->GetColor() );
+                    sp->SetColor( i_color );
                     // save object which is the closer of the screen
-                    it_intersection_obj = it;
+                    last_intersection_obj = *it;
                 }
             }
         }
-        //now iterate throught scene's light list to compute pixel color
+//        cout << "out" << endl;
+        // now iterate throught scene's light list to compute pixel color
         if (distance == -1 ) continue;
 
-        list<Light>::iterator light_it = LightList.begin();
+        // get the Point of intersection (we have the vector and the distance)
+        Point  * r_orig   = r->GetOrigin();
+        Vector * r_vector = r->GetVector();
+        Point p_intersection = Point( r_orig->X() + distance * r_vector->X(),
+                                      r_orig->Y() + distance * r_vector->Y(),
+                                      r_orig->Z() + distance * r_vector->Z());
 
+//        cout << "intersection: " << p_intersection << endl;
+
+        pixelInShadow = false;
+        list<Light>::iterator light_it = LightList.begin();
         for(;light_it != LightList.end(); light_it++)
         {
-            // get the Point of intersection (we have the vector and the distance)
-            Point * r_orig = r->GetOrigin();
-            Vector * r_vector = r->GetVector();
-            Point p_intersection = Point(distance * r_vector->X() + r_orig->X(),
-                                         distance * r_vector->Y() + r_orig->Y(),
-                                         distance * r_vector->Z() + r_orig->Z());
+            Point o_light = light_it->GetPosition();
+//            cout << "light position: "<< o_light << endl;
             // get a unit vector with intersection and light source
-            Vector light_vector = Vector(p_intersection, (*light_it).GetPosition());
+            Vector light_vector = Vector( p_intersection, o_light);
+
+            //cout << "Vector intersection to light : "<<light_vector << endl;
+
+            // Check light_vector and intersection normal
+            Vector v_normal = last_intersection_obj->geo->GetNormal(p_intersection);
+
+            float tmp_dot = dot(v_normal, light_vector);
+            if (tmp_dot == 0) { break;}
             
             // create a ray with the intersection and the light point
             delete r;
             r = new Ray(light_vector, p_intersection);
             // check if any intersection is found between this ray and all objects of the scene
             pixelInShadow = false;
-            list<RenderableObject*>::iterator it_obj_light = ObjectList.begin();
-            for (;it_obj_light != ObjectList.end(); it_obj_light++)
+            distance2 = -1;
+            list<RenderableObject*>::iterator it_obj_2 = ObjectList.begin();
+            for (;it_obj_2 != ObjectList.end(); it_obj_2++)
             {
-                //do not check intersection with the current object found as the closest intersection of the ray.
-                if (it_obj_light != it_intersection_obj )
-                {
-                    if ((*it_obj_light)->geo->GetIntersection(*r, distance2))
+                  //do not check intersection with the current object found as the closest intersection of the ray.
+             //   if (it_obj_2 != it_intersection_obj )
+             //   {
+                    if ((*it_obj_2)->geo->GetIntersection(*r, distance2))
                     {
-                        //cout << "Intersection found !, pixel in a shadow" << endl;
-                        pixelInShadow = true;
-                        break;
+                        
+                        //cout << "intersection2 found: " << distance2 << endl;
+                        //if (distance2  > 0.0001 or distance2 < -0.0001)
+                        if (  distance2 > 0.1)
+                        {
+//                             cout << "Intersection 2 found at: "<< distance2 << " for ray: " << *r << "With object, id: "<< (*it_obj_2)->GetId()<< endl;
+                            pixelInShadow = true;
+                            break;
+                        }
                     }
-                }
+             //   }
             }
-            // if no intersection, update ScreenPoint Color with light
-            if ( pixelInShadow )
-            {
-                cout << "Ray in light! :" << *r << endl;
-                Color c = (*it_intersection_obj)->GetColor();
-
-                sp->SetColor(Color());
-            }
-            
         }
-        
+        // if no intersection, update ScreenPoint Color with light
+        if ( pixelInShadow )
+        {
+            Color c = last_intersection_obj->GetColor();
+            Color c2(50,50,50);
+            c.Minus(c2);
+            sp->SetColor(c);
+        }
+
     }
     cout << "Rendering ended." << endl;
     SnapShot("/tmp/plop.bmp");

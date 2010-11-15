@@ -72,6 +72,7 @@ void Camera::InitScreenIterator()
  *  This method returns true is a new ray is available.
  *  The new Ray is available thru the reference parameter 
  */
+//deprecated ? ?
 bool Camera::GetNextRay(Ray * r)
 {
     if (it != Screen.end())
@@ -116,7 +117,7 @@ void Camera::DumpRawImage()
     {
         rawImage.push_back(itdump->GetColor());
     }
-    cout << "Dump into raw image completed: unmber of pixel:" << rawImage.size() << endl;
+    cout << "Dump into raw image completed: number of pixel:" << rawImage.size() << endl;
 }
 
 /**
