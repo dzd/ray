@@ -1,7 +1,7 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.67])
+AC_PREREQ([2.63])
 AC_INIT([ray], [0.1], [dzd2009@gmail.com])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/main.cpp])
