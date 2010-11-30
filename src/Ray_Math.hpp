@@ -7,9 +7,11 @@
 class Matrix3
 {
 protected:
+    float *a, *b, *c, *d, *e, *f, *g, *h, *i;
     float array[9];
     void copy(const Matrix3 & m);
-    
+    void Init();
+
 public:
     Matrix3(float a1, float a2, float a3,float b1,float b2,float b3,float c1,float c2,float c3);
     Matrix3();
@@ -20,6 +22,9 @@ public:
 
     void setAt(int i, int j, float value);
     float at(int i, int j) const;
+
+    float det();
+    bool inverse() {}
 };
 
 

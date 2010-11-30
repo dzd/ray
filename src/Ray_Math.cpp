@@ -8,6 +8,7 @@ using namespace std;
  */
 Matrix3::Matrix3(float a1, float a2, float a3,float b1,float b2,float b3,float c1,float c2,float c3)
 {
+    Init();
     array[0]=a1;
     array[1]=a2;
     array[2]=a3;
@@ -23,6 +24,7 @@ Matrix3::Matrix3(float a1, float a2, float a3,float b1,float b2,float b3,float c
  */
 Matrix3::Matrix3()
 {
+    Init();
     for (int i = 0; i <9; i++)
         array[i] = 0;
 }
@@ -31,6 +33,7 @@ Matrix3::Matrix3()
  **/
 Matrix3::Matrix3(const Matrix3 & m)
 {
+    Init();
     copy(m);
 }
 
@@ -54,6 +57,22 @@ void Matrix3::copy(const Matrix3 & m)
             setAt(i,j,m.at(i,j));
         }
     }
+}
+
+/**
+ * Init function
+ */
+void Matrix3::Init()
+{
+    a = &array[0];
+    b = &array[1];
+    c = &array[2];
+    d = &array[3];
+    e = &array[4];
+    f = &array[5];
+    g = &array[6];
+    h = &array[7];
+    i = &array[8];
 }
 
 /**
@@ -91,6 +110,14 @@ ostream & operator<<(ostream & o, const Matrix3 & m)
     return o << "[[" << m.at(1,1) <<","<< m.at(2,1)<<","<<m.at(3,1)<<"]\n"
                <<"[" << m.at(1,2) <<","<< m.at(2,2)<<","<<m.at(3,2)<<"]\n"
                <<"[" << m.at(1,3) <<","<< m.at(2,3)<<","<<m.at(3,3)<<"]]";
+}
+
+/**
+ * Returns the determinant of the matrix
+ */
+float Matrix3::det()
+{
+    return (*a)*(*e)*(*i) + (*c)*(*f)*(*g) + (*c)*(*d)*(*h) - (*a)*(*f)*(*h) - (*b)*(*d)*(*i) - (*c)*(*e)*(*g);
 }
 
 //----------------------------------------------------------------------------------------------------
