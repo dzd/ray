@@ -19,24 +19,30 @@ void Scene::GenerateScene()
 {
     RenderableObject * r;
 
-    Color c1(255, 0, 0);
-    r = new RenderableObject(c1, new RSphere(Point(500,330,800), 130));
+//     Color c1(255, 0, 0);
+//     r = new RenderableObject(c1, new RSphere(Point(500,330,800), 130));
+//     ObjectList.push_back(r);
+// 
+//     //Temporary hardcoded init of renderable object list
+//     Color c(0, 255, 0);
+//     r = new RenderableObject(c, new RSphere(Point(180,150,400), 130));
+//     ObjectList.push_back(r);
+// 
+//     Color c3(0, 0, 255);
+//     r = new RenderableObject(c3, new RSphere(Point(320,240,600), 200));
+//     ObjectList.push_back(r);
+// 
+// 
+     Color c4(255, 0, 0);
+     Point p4(0,200,150);
+     r = new RenderableObject(c4, new RPoint(p4));
+     ObjectList.push_back(r);
+
+
+    Color c5(0, 0, 0);
+    r = new RenderableObject(c5, new RPlan(Point(0,0,0), Point(0,1,0), Point(0,1,1)));
     ObjectList.push_back(r);
 
-    //Temporary hardcoded init of renderable object list
-    Color c(0, 255, 0);
-    r = new RenderableObject(c, new RSphere(Point(180,150,400), 130));
-    ObjectList.push_back(r);
-
-    Color c3(0, 0, 255);
-    r = new RenderableObject(c3, new RSphere(Point(320,240,600), 200));
-    ObjectList.push_back(r);
-
-
-    Color c4(255, 0, 0);
-    Point p4(0,200,150);
-    r = new RenderableObject(c3, new RPoint(p4));
-    ObjectList.push_back(r);
 
     // Append a new light to the scene
     Light l = Light(p4, Color(255,255,255));
@@ -77,7 +83,7 @@ void Scene::Render()
                 {
                     distance = d;
                     Color i_color = (*it)->GetColor();
-//                     cout << "Closer intersection found at: "<< distance << " for ray: " << *r << " color:" << i_color << endl;
+                     cout << "Closer intersection found at: "<< distance << " for ray: " << *r << " color:" << i_color << endl;
                     sp->SetDistance(distance);
                     sp->SetColor( i_color );
                     // save object which is the closer of the screen
@@ -85,7 +91,7 @@ void Scene::Render()
                 }
             }
         }
-//        cout << "out" << endl;
+        cout << "out" << endl;
         // now iterate throught scene's light list to compute pixel color
         if (distance == -1 ) continue;
 

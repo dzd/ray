@@ -87,11 +87,12 @@ class RCube : public Geometry
 class RPlan : public Geometry
 {
 protected:
-    Point  *origin;
-    Vector *vnormal;
+    Point  *O, *A, *B;
+    Vector *VN, *OA, *OB;
 
 public:
-    RPlan(Point o, Vector vnormal);
+//     RPlan(Point o, Vector vnormal);
+    RPlan(Point O, Point A, Point B);
 
     bool GetIntersection(Ray & r, float & distance);
     Vector GetNormal(Point & p);
