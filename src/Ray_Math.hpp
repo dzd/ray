@@ -4,6 +4,30 @@
 #include <iostream>
 #include <cmath>
 
+class Matrix3
+{
+protected:
+    float *a, *b, *c, *d, *e, *f, *g, *h, *i;
+    float array[9];
+    void copy(const Matrix3 & m);
+    void Init();
+
+public:
+    Matrix3(float a1, float a2, float a3,float b1,float b2,float b3,float c1,float c2,float c3);
+    Matrix3();
+    Matrix3(const Matrix3 & m);
+    Matrix3(Matrix3 & m);
+
+    void operator=(const Matrix3 & m);
+
+    void setAt(int i, int j, float value);
+    float at(int i, int j) const;
+
+    float det();
+    bool inverse() {}
+};
+
+
 class Point
 {
 protected:
@@ -68,5 +92,6 @@ float dot(const Vector& v1, const Vector &v2);
 ostream & operator<<(ostream &o, Point  & p);
 ostream & operator<<(ostream &o, Vector & v);
 ostream & operator<<(ostream &o, Ray & r);
+ostream & operator<<(ostream & o, const Matrix3 & m);
 
 #endif //_RAY_MATH_

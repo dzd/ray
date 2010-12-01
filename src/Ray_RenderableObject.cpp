@@ -102,21 +102,65 @@ Vector RSphere::GetNormal(Point & p)
 
 //----- RPlan
 
-RPlan::RPlan(const Point o, const Vector vnormal)
+/*
+ * Constructor with a point and a normal vector
+ */
+// RPlan::RPlan(const Point o, const Vector vnormal)
+// {
+//     origin = new Point(o);
+//     this->vnormal = new Vector(vnormal);
+// }
+/*
+ * Constructor with 3 points
+ * It assumes O,A,B distinct and all on the same line.
+ */
+RPlan::RPlan(Point O, Point A, Point B)
 {
-    origin = new Point(o);
-    this->vnormal = new Vector(vnormal);
+    this->O = new Point(O);
+    this->A = new Point(A);
+    this->B = new Point(B);
+
+    OA = new Vector(O, A);
+    OB = new Vector(O, B);
+
+    //VN = new Vector();
+
 }
 
 bool RPlan::GetIntersection(Ray & r, float & distance)
 {
-    
+    float a1, a2, a3, b1, b2, b3;
+
+    float xr = r.GetVector()->X();
+    float yr = r.GetVector()->Y();
+    float zr = r.GetVector()->Z();
+    float xo = r.GetOrigin()->X();
+    float yo = r.GetOrigin()->Y();
+    float zo = r.GetOrigin()->Z();
+
+    if ( xr == 0 ) { return false;}
+
+    a1 = yr * (xo     - O->X()) - xr * (yo     - O->Y());
+    a2 = yr * (A->X() - O->X()) + xr * (A->Y() - O->Y());
+    a3 =-xr * (B->Y() - O->Y()) + yr * (B->X() - O->X());
+
+    b1 = zr * (xo     - O->X()) - xr * (zo     - O->Z());
+    b2 = zr * (A->X() - O->X()) + xr * (A->Z() - O->Z());
+    b3 =-xr * (B->Z() - O->Z()) + zr * (B->X() - O->X());
+
+    float alpha = (b3 * a1 - a3 * b1) / (b3 * a2 + a3 * b2);
+    float beta  = (a1 - alpha * a2) / a3;
+
+    float t = ((xo - O->X()) - alpha * (A->X() - O->X()) - beta * (B->X() - O->X())) / xr;
+
+    distance = t;
+    return true;
 }
 
 
 Vector RPlan::GetNormal(Point & p)
 {
-    return Vector(0,0,0);
+    return Vector(1,1,1);
 }
 
 
