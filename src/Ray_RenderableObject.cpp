@@ -123,40 +123,42 @@ RPlan::RPlan(Point O, Point A, Point B)
     OA = new Vector(O, A);
     OB = new Vector(O, B);
 
+    cout << "OA: " << *OA << endl;
+    cout << "OB: " << *OB << endl;
+    
+
     //VN = new Vector();
 
 }
-
 bool RPlan::GetIntersection(Ray & r, float & distance)
 {
-    float a1, a2, a3, b1, b2, b3;
+    Matrix3 m1, m2;
+    m1.setAt(1,1, r.GetVector()->X());
+    m1.setAt(1,2, OA->X());
+    m1.setAt(1,3, OB->X());
 
-    float xr = r.GetVector()->X();
-    float yr = r.GetVector()->Y();
-    float zr = r.GetVector()->Z();
-    float xo = r.GetOrigin()->X();
-    float yo = r.GetOrigin()->Y();
-    float zo = r.GetOrigin()->Z();
+    m1.setAt(2,1, r.GetVector()->Y());
+    m1.setAt(2,2, OA->Y());
+    m1.setAt(2,3, OB->Y());
 
-    if ( xr == 0 ) { return false;}
+    m1.setAt(3,1, r.GetVector()->Z());
+    m1.setAt(3,2, OA->Z());
+    m1.setAt(3,3, OB->Z());
 
-    a1 = yr * (xo     - O->X()) - xr * (yo     - O->Y());
-    a2 = yr * (A->X() - O->X()) + xr * (A->Y() - O->Y());
-    a3 =-xr * (B->Y() - O->Y()) + yr * (B->X() - O->X());
+    //cout << m1.det() << endl;
 
-    b1 = zr * (xo     - O->X()) - xr * (zo     - O->Z());
-    b2 = zr * (A->X() - O->X()) + xr * (A->Z() - O->Z());
-    b3 =-xr * (B->Z() - O->Z()) + zr * (B->X() - O->X());
+    if (! m1.inverse(m2) )
+        return false;
 
-    float alpha = (b3 * a1 - a3 * b1) / (b3 * a2 + a3 * b2);
-    float beta  = (a1 - alpha * a2) / a3;
+    Vector v1(r.GetOrigin()->X() - O->X(),
+              r.GetOrigin()->Y() - O->Y(),
+              r.GetOrigin()->Z() - O->Z());
 
-    float t = ((xo - O->X()) - alpha * (A->X() - O->X()) - beta * (B->X() - O->X())) / xr;
+    Vector v_res = m2 * v1;
 
-    distance = t;
+    distance = - v_res.X();
     return true;
 }
-
 
 Vector RPlan::GetNormal(Point & p)
 {

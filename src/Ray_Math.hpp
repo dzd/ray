@@ -82,9 +82,11 @@ public:
 };
 
 /*Global ressources*/
-float operator*(Vector& v1, Vector &v2);
-Vector operator*(float f, Vector &v);
-Vector operator-(Point & p1, Point & p2);
+float   operator*(Vector& v1, Vector &v2);
+Vector  operator*(float f, Vector &v);
+Vector  operator*(Matrix3 &m, Vector& v);
+Vector  operator-(Point & p1, Point & p2);
+
 
 Vector cross(const Vector& v1, const Vector &v2);
 float dot(const Vector& v1, const Vector &v2);

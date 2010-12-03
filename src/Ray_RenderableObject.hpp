@@ -84,6 +84,9 @@ public:
 class RCube : public Geometry
 {};
 
+class RTriangle : public Geometry
+{};
+
 class RPlan : public Geometry
 {
 protected:

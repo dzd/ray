@@ -126,7 +126,7 @@ float Matrix3::det()
 bool Matrix3::inverse(Matrix3 & mresult)
 {
     float det = this->det();
-    cout << "Determinant is: "<< det << endl;
+    //cout << "Determinant is: "<< det << endl;
     
     if (det == 0) { return false; }
     float det_1 = 1/det;
@@ -144,6 +144,17 @@ bool Matrix3::inverse(Matrix3 & mresult)
     mresult.setAt(3,3, ( det_1 * ((*a)*(*e) - (*d)*(*b))) );    
 
     return true;
+}
+
+Vector  operator*(Matrix3 &m, Vector& v)
+{
+    float vx = v.X();
+    float vy = v.Y();
+    float vz = v.Z();
+
+    return Vector(m.at(1,1)*vx + m.at(1,2)*vy + m.at(1,3)*vz,
+                  m.at(2,1)*vx + m.at(2,2)*vy + m.at(2,3)*vz,
+                  m.at(3,1)*vx + m.at(3,2)*vy + m.at(3,3)*vz);
 }
 
 
