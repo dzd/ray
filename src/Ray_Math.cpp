@@ -107,9 +107,9 @@ void Matrix3::setAt(int i, int j, float value)
  */
 ostream & operator<<(ostream & o, const Matrix3 & m)
 {
-    return o << "[[" << m.at(1,1) <<","<< m.at(2,1)<<","<<m.at(3,1)<<"]\n"
-               <<"[" << m.at(1,2) <<","<< m.at(2,2)<<","<<m.at(3,2)<<"]\n"
-               <<"[" << m.at(1,3) <<","<< m.at(2,3)<<","<<m.at(3,3)<<"]]";
+    return o <<"[[" << m.at(1,1) <<","<< m.at(2,1)<<","<<m.at(3,1)<<"]\n"
+             <<" [" << m.at(1,2) <<","<< m.at(2,2)<<","<<m.at(3,2)<<"]\n"
+             <<" [" << m.at(1,3) <<","<< m.at(2,3)<<","<<m.at(3,3)<<"]]";
 }
 
 /**
@@ -117,8 +117,33 @@ ostream & operator<<(ostream & o, const Matrix3 & m)
  */
 float Matrix3::det()
 {
-    return (*a)*(*e)*(*i) + (*c)*(*f)*(*g) + (*c)*(*d)*(*h) - (*a)*(*f)*(*h) - (*b)*(*d)*(*i) - (*c)*(*e)*(*g);
+    return   (*a) * ((*e)*(*i) - (*h)*(*f))
+           - (*b) * ((*d)*(*i) - (*g)*(*f))
+           + (*c) * ((*d)*(*h) - (*g)*(*e));
 }
+
+bool Matrix3::inverse(Matrix3 & mresult)
+{
+    float det = this->det();
+    cout << "Determinant is: "<< det << endl;
+    
+    if (det == 0) { return false; }
+    
+    mresult.setAt(1,1, (( (*a)/det) * ((*e)*(*f) - (*h)*(*i))) );
+    mresult.setAt(1,2, ((-(*d)/det) * ((*b)*(*i) - (*h)*(*c))) );
+    mresult.setAt(1,3, (( (*g)/det) * ((*b)*(*f) - (*e)*(*c))) );
+
+    mresult.setAt(2,1, ((-(*b)/det) * ((*d)*(*i) - (*g)*(*f))) );
+    mresult.setAt(2,2, (( (*e)/det) * ((*a)*(*i) - (*g)*(*c))) );
+    mresult.setAt(2,3, ((-(*h)/det) * ((*a)*(*f) - (*d)*(*c))) );
+
+    mresult.setAt(3,1, (( (*c)/det) * ((*d)*(*h) - (*g)*(*e))) );
+    mresult.setAt(3,2, ((-(*f)/det) * ((*a)*(*h) - (*g)*(*b))) );
+    mresult.setAt(3,3, (( (*i)/det) * ((*a)*(*e) - (*d)*(*b))) );    
+
+    return true;
+}
+
 
 //----------------------------------------------------------------------------------------------------
 

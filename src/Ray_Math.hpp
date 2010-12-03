@@ -18,13 +18,13 @@ public:
     Matrix3(const Matrix3 & m);
     Matrix3(Matrix3 & m);
 
-    void operator=(const Matrix3 & m);
+    void    operator=(const Matrix3 & m);
 
-    void setAt(int i, int j, float value);
-    float at(int i, int j) const;
+    void    setAt(int i, int j, float value);
+    float   at(int i, int j) const;
 
-    float det();
-    bool inverse() {}
+    float   det();
+    bool    inverse(Matrix3 & mresult); 
 };
 
 
