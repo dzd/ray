@@ -18,12 +18,12 @@ int main()
     cout << "m4:\n" << m4 << endl;
 
     if( m1.inverse(m3) )
-        cout << "m1 inverse is: " << m3 << endl;
+        cout << "m1 inverse is:\n" << m3 << endl;
     else 
         cout << "m1 isn't inversible"<< endl;
 
     if( m4.inverse(m3))
-        cout << "m4 inverse is: " << m3  << endl;
+        cout << "m4 inverse is:\n" << m3  << endl;
     else 
         cout << "m4 isn't inversible"<< endl;
 
