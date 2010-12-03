@@ -50,6 +50,7 @@ void Matrix3::operator=(const Matrix3 & m)
  */
 void Matrix3::copy(const Matrix3 & m)
 {
+cout << "copy" << endl;
     for (int j = 1; j<4; j++)
     {
         for (int i = 1; i<4; i++)
@@ -84,7 +85,7 @@ float Matrix3::at(int i, int j) const
 {
     if(i >= 1 && i < 4 && j >= 1 && j < 4)
     {
-        return array[i-1+3*(j-1)];
+        return array[3*(i-1)+j-1];
     }
     return 0;
 }
@@ -98,7 +99,7 @@ void Matrix3::setAt(int i, int j, float value)
 {
     if(i >= 1 && i < 4 && j >= 1 && j < 4)
     {
-        array[i-1+3*(j-1)] = value;
+        array[3*(i-1)+j-1] = value;
     }
 }
 
@@ -107,9 +108,9 @@ void Matrix3::setAt(int i, int j, float value)
  */
 ostream & operator<<(ostream & o, const Matrix3 & m)
 {
-    return o <<"[[" << m.at(1,1) <<","<< m.at(2,1)<<","<<m.at(3,1)<<"]\n"
-             <<" [" << m.at(1,2) <<","<< m.at(2,2)<<","<<m.at(3,2)<<"]\n"
-             <<" [" << m.at(1,3) <<","<< m.at(2,3)<<","<<m.at(3,3)<<"]]";
+    return o <<"[[" << m.at(1,1) <<","<< m.at(1,2)<<","<<m.at(1,3)<<"]\n"
+             <<" [" << m.at(2,1) <<","<< m.at(2,2)<<","<<m.at(2,3)<<"]\n"
+             <<" [" << m.at(3,1) <<","<< m.at(3,2)<<","<<m.at(3,3)<<"]]";
 }
 
 /**
@@ -128,18 +129,19 @@ bool Matrix3::inverse(Matrix3 & mresult)
     cout << "Determinant is: "<< det << endl;
     
     if (det == 0) { return false; }
+    float det_1 = 1/det;
     
-    mresult.setAt(1,1, (( (*a)/det) * ((*e)*(*f) - (*h)*(*i))) );
-    mresult.setAt(1,2, ((-(*d)/det) * ((*b)*(*i) - (*h)*(*c))) );
-    mresult.setAt(1,3, (( (*g)/det) * ((*b)*(*f) - (*e)*(*c))) );
+    mresult.setAt(1,1, ( det_1 * ((*e)*(*i) - (*h)*(*f))) );
+    mresult.setAt(1,2, (-det_1 * ((*b)*(*i) - (*h)*(*c))) );
+    mresult.setAt(1,3, ( det_1 * ((*b)*(*f) - (*e)*(*c))) );
 
-    mresult.setAt(2,1, ((-(*b)/det) * ((*d)*(*i) - (*g)*(*f))) );
-    mresult.setAt(2,2, (( (*e)/det) * ((*a)*(*i) - (*g)*(*c))) );
-    mresult.setAt(2,3, ((-(*h)/det) * ((*a)*(*f) - (*d)*(*c))) );
+    mresult.setAt(2,1, (-det_1 * ((*d)*(*i) - (*g)*(*f))) );
+    mresult.setAt(2,2, ( det_1 * ((*a)*(*i) - (*g)*(*c))) );
+    mresult.setAt(2,3, (-det_1 * ((*a)*(*f) - (*d)*(*c))) );
 
-    mresult.setAt(3,1, (( (*c)/det) * ((*d)*(*h) - (*g)*(*e))) );
-    mresult.setAt(3,2, ((-(*f)/det) * ((*a)*(*h) - (*g)*(*b))) );
-    mresult.setAt(3,3, (( (*i)/det) * ((*a)*(*e) - (*d)*(*b))) );    
+    mresult.setAt(3,1, ( det_1 * ((*d)*(*h) - (*g)*(*e))) );
+    mresult.setAt(3,2, (-det_1 * ((*a)*(*h) - (*g)*(*b))) );
+    mresult.setAt(3,3, ( det_1 * ((*a)*(*e) - (*d)*(*b))) );    
 
     return true;
 }
