@@ -17,7 +17,7 @@ RenderableObject::RenderableObject(Color c, Geometry * g)
 }
 
 
-//---- RPoint
+//---- RPoint ------------------------------------------------------------------------
 RPoint::RPoint(Point & p)
 {
 	Center = new Point(p);
@@ -100,7 +100,7 @@ Vector RSphere::GetNormal(Point & p)
     return Vector(*Center, p);
 }
 
-//----- RPlan
+//----- RPlan ------------------------------------------------------------------------
 
 /*
  * Constructor with a point and a normal vector
@@ -122,10 +122,11 @@ RPlan::RPlan(Point O, Point A, Point B)
 
     OA = new Vector(O, A);
     OB = new Vector(O, B);
+    VN = new Vector(cross(*OB, *OA));
 
     cout << "OA: " << *OA << endl;
     cout << "OB: " << *OB << endl;
-    
+    cout << "VN: " << *VN << endl;
 
     //VN = new Vector();
 
@@ -156,13 +157,32 @@ bool RPlan::GetIntersection(Ray & r, float & distance)
 
     Vector v_res = m2 * v1;
 
-    distance = - v_res.X();
+    distance =-v_res.X();
+    u        = v_res.Y();
+    v        = v_res.Z();
+    //cout << "u: " << u << ",v: "<< v << endl;
     return true;
 }
 
 Vector RPlan::GetNormal(Point & p)
 {
-    return Vector(1,1,1);
+    return *VN;
 }
 
+//----- RTriangle ------------------------------------------------------------------------
+RTriangle::RTriangle(Point O, Point A, Point B, float u, float v) : RPlan(O, A, B)
+{
+    this->coord_u = u;
+    this->coord_v = v;
+}
+
+bool RTriangle::GetIntersection(Ray & r, float & distance)
+{
+    if ( RPlan::GetIntersection(r, distance) )
+    {
+        if(RPlan::u < coord_u && RPlan::v < coord_v)
+            return true;
+    }
+    return false;
+}
 

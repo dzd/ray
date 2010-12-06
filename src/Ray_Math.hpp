@@ -31,16 +31,16 @@ public:
 class Point
 {
 protected:
-	float x, y, z;
+    float x, y, z;
 
 public:
-	Point(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
-	Point(const Point & p) {x=p.x; y=p.y; z=p.z;}
+    Point(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
+    Point(const Point & p) {x=p.x; y=p.y; z=p.z;}
 
-//TODO: remove non const call of those getter
-	float X() {return x;}
-	float Y() {return y;}
-	float Z() {return z;}
+    //TODO: remove non const call of those getter
+    float X() {return x;}
+    float Y() {return y;}
+    float Z() {return z;}
 
     float X() const {return x;}
     float Y() const {return y;}
@@ -54,16 +54,17 @@ private:
     float   x, y, z;
 
 public:
-	Vector(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
-	Vector(Point p1, Point p2);
+    Vector(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
+    Vector(Point p1, Point p2);
 
-	Vector(const Vector& v) {x=v.x; y=v.y; z=v.z;}
+    Vector(const Vector& v) {x=v.x; y=v.y; z=v.z;}
 
     Vector * Normed();
+    float GetNorm();
 
-	float X() const {return x;}
-	float Y() const {return y;}
-	float Z() const {return z;}
+    float X() const {return x;}
+    float Y() const {return y;}
+    float Z() const {return z;}
 
 };
 

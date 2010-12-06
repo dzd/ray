@@ -60,7 +60,7 @@ private:
     int distance;
 
 public:
-    ScreenPoint(float x, float y, float z) : Point(x, y, z) {c = new Color(255,255,255); distance = 100000;}
+    ScreenPoint(float x, float y, float z) : Point(x, y, z) {c = new Color(0,0,0); distance = 100000;}
     ScreenPoint(const Point & p) : Point(p) {}
     ScreenPoint(const ScreenPoint & sp) : Point (0,0,0) {x = sp.X(); y = sp.Y(); z = sp.Z();
                                                         distance = sp.GetDistance();

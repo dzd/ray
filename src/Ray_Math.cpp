@@ -213,8 +213,13 @@ Vector::Vector(Point p1, Point p2)
 
 Vector * Vector::Normed()
 {
-    float sum = abs(x+y+z);
-    return new Vector(x/sum, y/sum, z/sum);
+    float n = GetNorm();
+    return new Vector(x/n, y/n, z/n);
+}
+
+float Vector::GetNorm()
+{
+    return sqrt(x*x+y*y+z*z);
 }
 
 //----------------------------------------------------------------------------------------------------
