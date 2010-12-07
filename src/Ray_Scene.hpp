@@ -20,6 +20,8 @@ private:
     list<Light>             LightList;
     Camera * camera;
 
+    bool LoadSceneFile(string filename);
+
 public:
     Scene();
 

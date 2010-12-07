@@ -17,7 +17,7 @@ RenderableObject::RenderableObject(Color c, Geometry * g)
 }
 
 
-//---- RPoint
+//---- RPoint ------------------------------------------------------------------------
 RPoint::RPoint(Point & p)
 {
 	Center = new Point(p);
@@ -100,7 +100,7 @@ Vector RSphere::GetNormal(Point & p)
     return Vector(*Center, p);
 }
 
-//----- RPlan
+//----- RPlan ------------------------------------------------------------------------
 
 /*
  * Constructor with a point and a normal vector
@@ -122,45 +122,67 @@ RPlan::RPlan(Point O, Point A, Point B)
 
     OA = new Vector(O, A);
     OB = new Vector(O, B);
+    VN = new Vector(cross(*OB, *OA));
+
+    cout << "OA: " << *OA << endl;
+    cout << "OB: " << *OB << endl;
+    cout << "VN: " << *VN << endl;
 
     //VN = new Vector();
 
 }
-
 bool RPlan::GetIntersection(Ray & r, float & distance)
 {
-    float a1, a2, a3, b1, b2, b3;
+    Matrix3 m1, m2;
+    m1.setAt(1,1, r.GetVector()->X());
+    m1.setAt(1,2, OA->X());
+    m1.setAt(1,3, OB->X());
 
-    float xr = r.GetVector()->X();
-    float yr = r.GetVector()->Y();
-    float zr = r.GetVector()->Z();
-    float xo = r.GetOrigin()->X();
-    float yo = r.GetOrigin()->Y();
-    float zo = r.GetOrigin()->Z();
+    m1.setAt(2,1, r.GetVector()->Y());
+    m1.setAt(2,2, OA->Y());
+    m1.setAt(2,3, OB->Y());
 
-    if ( xr == 0 ) { return false;}
+    m1.setAt(3,1, r.GetVector()->Z());
+    m1.setAt(3,2, OA->Z());
+    m1.setAt(3,3, OB->Z());
 
-    a1 = yr * (xo     - O->X()) - xr * (yo     - O->Y());
-    a2 = yr * (A->X() - O->X()) + xr * (A->Y() - O->Y());
-    a3 =-xr * (B->Y() - O->Y()) + yr * (B->X() - O->X());
+    //cout << m1.det() << endl;
 
-    b1 = zr * (xo     - O->X()) - xr * (zo     - O->Z());
-    b2 = zr * (A->X() - O->X()) + xr * (A->Z() - O->Z());
-    b3 =-xr * (B->Z() - O->Z()) + zr * (B->X() - O->X());
+    if (! m1.inverse(m2) )
+        return false;
 
-    float alpha = (b3 * a1 - a3 * b1) / (b3 * a2 + a3 * b2);
-    float beta  = (a1 - alpha * a2) / a3;
+    Vector v1(r.GetOrigin()->X() - O->X(),
+              r.GetOrigin()->Y() - O->Y(),
+              r.GetOrigin()->Z() - O->Z());
 
-    float t = ((xo - O->X()) - alpha * (A->X() - O->X()) - beta * (B->X() - O->X())) / xr;
+    Vector v_res = m2 * v1;
 
-    distance = t;
+    distance =-v_res.X();
+    u        = v_res.Y();
+    v        = v_res.Z();
+    //cout << "u: " << u << ",v: "<< v << endl;
     return true;
 }
 
-
 Vector RPlan::GetNormal(Point & p)
 {
-    return Vector(1,1,1);
+    return *VN;
 }
 
+//----- RTriangle ------------------------------------------------------------------------
+RTriangle::RTriangle(Point O, Point A, Point B, float u, float v) : RPlan(O, A, B)
+{
+    this->coord_u = u;
+    this->coord_v = v;
+}
+
+bool RTriangle::GetIntersection(Ray & r, float & distance)
+{
+    if ( RPlan::GetIntersection(r, distance) )
+    {
+        if(RPlan::u < coord_u && RPlan::v < coord_v)
+            return true;
+    }
+    return false;
+}
 
