@@ -81,14 +81,13 @@ public:
     Vector GetNormal(Point & p);
 };
 
-class RCube : public Geometry
-{};
-
 class RPlan : public Geometry
 {
 protected:
     Point  *O, *A, *B;
     Vector *VN, *OA, *OB;
+
+    float u, v;
 
 public:
 //     RPlan(Point o, Vector vnormal);
@@ -98,5 +97,19 @@ public:
     Vector GetNormal(Point & p);
 };
 
+class RTriangle : public RPlan
+{
+protected:
+    float coord_u;
+    float coord_v;
+
+public:
+    RTriangle(Point O, Point A, Point B, float u, float v);
+
+    bool GetIntersection(Ray & r, float & distance);
+};
+
+class RCube : public Geometry
+{};
 
 #endif //_RAY_RENDERABLE_OBJ_
