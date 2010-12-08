@@ -15,8 +15,45 @@ Scene::Scene()
 
 bool Scene::LoadSceneFile(string filename)
 {
+    xmlDocPtr doc   = NULL;
+    xmlNodePtr cur  = NULL;
+
+    doc = xmlParseFile(filename.c_str());
     
+    if (doc == NULL ) {
+        cout << "Document not parsed successfully."<< endl;
+        return false;
+    }
+    
+    cur = xmlDocGetRootElement(doc);
+    
+    if (cur == NULL) {
+        cout << "empty document."<< endl;
+        xmlFreeDoc(doc);
+        return false;
+    }
+    
+    if (xmlStrcmp(cur->name, (const xmlChar *) "scene")) {
+        fprintf(stderr,"document of the wrong type, root node != scene");
+        xmlFreeDoc(doc);
+        return false;
+    }
+    
+    cur = cur->xmlChildrenNode;
+    while (cur != NULL) 
+    {
+        if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
+        {
+            //parseStory (doc, cur);
+            cout << "Object to parse!" << endl;
+        }
+        cur = cur->next;
+    }
+    
+    xmlFreeDoc(doc);
+    return true;
 }
+
 
 
 
@@ -25,6 +62,10 @@ bool Scene::LoadSceneFile(string filename)
  */
 void Scene::GenerateScene()
 {
+
+    if (LoadSceneFile("./input/scene.xml"))
+    return;
+
     RenderableObject * r;
 
     Color c1(255, 0, 0);

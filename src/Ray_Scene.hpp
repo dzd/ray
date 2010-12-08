@@ -4,6 +4,9 @@
 #include <list>
 #include <string>
 
+#include <libxml/xmlmemory.h>
+#include "libxml/parser.h"
+
 #include "Ray_RenderableObject.hpp"
 #include "Ray_Camera.hpp"
 #include "Ray_Image.hpp"
@@ -18,7 +21,7 @@ class Scene
 private:
     list<RenderableObject*> ObjectList;
     list<Light>             LightList;
-    Camera * camera;
+    Camera *                camera;
 
     bool LoadSceneFile(string filename);
 

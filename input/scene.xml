@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<scene> 
+    <object name="sphere1">
+            <type>sphere</type>
+            <radius>130</radius>
+            <position x="150" y="150" z="300"></position>
+    </object>
+</scene>
