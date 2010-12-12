@@ -19,37 +19,39 @@ bool Scene::LoadSceneFile(string filename)
     xmlNodePtr cur  = NULL;
 
     doc = xmlParseFile(filename.c_str());
-    
+
     if (doc == NULL ) {
         cout << "Document not parsed successfully."<< endl;
         return false;
     }
-    
+
     cur = xmlDocGetRootElement(doc);
-    
+
     if (cur == NULL) {
         cout << "empty document."<< endl;
         xmlFreeDoc(doc);
         return false;
     }
-    
+
     if (xmlStrcmp(cur->name, (const xmlChar *) "scene")) {
-        fprintf(stderr,"document of the wrong type, root node != scene");
+        cout << "document of the wrong type, root node != scene"<< endl;
         xmlFreeDoc(doc);
         return false;
     }
-    
+
     cur = cur->xmlChildrenNode;
-    while (cur != NULL) 
+    xmlChar *object_type;
+    while (cur != NULL)
     {
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
         {
-            //parseStory (doc, cur);
-            cout << "Object to parse!" << endl;
+            object_type = xmlGetProp(cur, (const xmlChar *)"type");
+            cout << "object type: " << object_type << endl;
+            xmlFree(object_type);
         }
         cur = cur->next;
     }
-    
+
     xmlFreeDoc(doc);
     return true;
 }

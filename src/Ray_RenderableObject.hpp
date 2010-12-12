@@ -71,8 +71,8 @@ public:
 class RSphere : public Geometry
 {
 private:
-    Point * Center;
-    unsigned int      Radius;
+    Point          *Center;
+    unsigned int    Radius;
 
 public:
     RSphere(Point p, unsigned int r);

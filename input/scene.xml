@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <scene> 
-    <object name="sphere1">
-            <type>sphere</type>
+    <object name="sphere1" type="sphere">
             <radius>130</radius>
             <position x="150" y="150" z="300"></position>
+    </object>
+
+    <object name="plan1" type="plan">
+            <position x="0"   y="0"  z="0"></position>
+            <position x="100" y="0"  z="0"></position>
+            <position x="0"   y="10" z="100"></position>
     </object>
 </scene>
