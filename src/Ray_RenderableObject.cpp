@@ -1,7 +1,4 @@
 using namespace std;
-
-#include <iostream>
-
 #include "Ray_RenderableObject.hpp"
 
 //---- RenderableObject
@@ -15,7 +12,6 @@ RenderableObject::RenderableObject(Color c, Geometry * g)
     color = c;
     geo = g;
 }
-
 
 //---- RPoint ------------------------------------------------------------------------
 RPoint::RPoint(Point & p)
@@ -49,13 +45,22 @@ Vector RPoint::GetNormal(Point & p)
     return Vector(0,0,0);
 }
 
+//---- RSphere ------------------------------------------------------------------
+map<string, string> RSphere::mandatoryAttributes;
+bool RSphere::mandatoryAttributesFilled = false;
 
+/**
+ * RSphere constructor
+ */
 RSphere::RSphere(Point p, unsigned int r)
 {
     Radius = r;
     Center = new Point(p);
 }
 
+/**
+ * RSphere ray's intersection computation
+ */
 bool RSphere::GetIntersection(Ray & r, float & distance)
 {
     // float a;
@@ -95,10 +100,30 @@ bool RSphere::GetIntersection(Ray & r, float & distance)
     return false;
 }
 
+/**
+ * RSphere normal at one point computation.
+ */
 Vector RSphere::GetNormal(Point & p)
 {
     return Vector(*Center, p);
 }
+
+/**
+ * Get the list of mandatory of attributes to construct objects of the scene.
+ */
+map<string, string> & RSphere::GetMandatoryAttributes()
+{
+
+    if( ! mandatoryAttributesFilled )
+    {
+        mandatoryAttributes["radius"]   = "";
+        mandatoryAttributes["position"] = "";
+        mandatoryAttributesFilled = true;
+    }
+
+    return mandatoryAttributes;
+}
+
 
 //----- RPlan ------------------------------------------------------------------------
 

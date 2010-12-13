@@ -10,4 +10,12 @@
             <position x="100" y="0"  z="0"></position>
             <position x="0"   y="10" z="100"></position>
     </object>
+    
+    <object name="foo" type="foo">
+            <position x="0"   y="0"  z="0"></position>
+    </object>
+    
+    <object name="foo2">
+            <position x="0" y="0"  z="0"></position>
+    </object>
 </scene>

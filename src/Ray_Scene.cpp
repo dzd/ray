@@ -13,6 +13,11 @@ Scene::Scene()
     GenerateScene();
 }
 
+
+
+/**
+ * High level parsing of scene file.
+ */
 bool Scene::LoadSceneFile(string filename)
 {
     xmlDocPtr doc   = NULL;
@@ -45,8 +50,11 @@ bool Scene::LoadSceneFile(string filename)
     {
         if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
         {
-            object_type = xmlGetProp(cur, (const xmlChar *)"type");
-            cout << "object type: " << object_type << endl;
+            if ((object_type = xmlGetProp(cur, (const xmlChar *)"type")) != NULL )
+            {
+                cout << "object type: " << object_type << endl;
+                AddObjectToScene(string((char*)object_type), cur);
+            }
             xmlFree(object_type);
         }
         cur = cur->next;
@@ -54,6 +62,28 @@ bool Scene::LoadSceneFile(string filename)
 
     xmlFreeDoc(doc);
     return true;
+}
+
+/**
+ * Instanciate objects and appends them to the list.
+ */
+void Scene::AddObjectToScene(string object_type, xmlNodePtr cur)
+{
+    map<string, string> attributes;
+    RenderableObject    *currentObj;
+
+    // TODO: use synonyms instead of hardcoded strings.
+    if ( object_type == "sphere")
+    {
+        attributes = RSphere::GetMandatoryAttributes();
+        GetAttributesValues(attributes, cur);
+        //currentObj = new RSphere();
+    }
+}
+
+void Scene::GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur)
+{
+    
 }
 
 

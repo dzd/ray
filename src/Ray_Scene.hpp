@@ -24,6 +24,8 @@ private:
     Camera *                camera;
 
     bool LoadSceneFile(string filename);
+    void AddObjectToScene(string object_type, xmlNodePtr cur);
+    void GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur);
 
 public:
     Scene();
