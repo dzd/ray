@@ -18,8 +18,10 @@ public:
     Color(int ir, int ig, int ib);
     Color(const Color & c);
 
+
     void Add   (const Color & c);
     void Minus (const Color & c);
+    void Set(unsigned char r, unsigned char g, unsigned char b);
 
     void Show();
 };

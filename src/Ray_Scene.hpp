@@ -28,8 +28,11 @@ private:
 //test
     bool AddSphereToScene(xmlDocPtr doc);
     bool AddObjectToScene(xmlDocPtr doc, string object_type);
-    
-    bool GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* pointId = NULL);
+
+    bool GetFloatTriplet(xmlNodePtr cur, float & x, float & y, float & z,
+                         const char *uniqueId=NULL, const char *floatTripletName="position",
+                         const char *x_name="x",    const char *y_name="y", const char *z_name="z");
+
     bool GetFloat(xmlNodePtr cur, float & value, xmlChar* name = NULL);
 
 

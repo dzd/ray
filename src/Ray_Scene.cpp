@@ -45,25 +45,11 @@ bool Scene::LoadSceneFile(string filename)
     }
 
     cur = cur->xmlChildrenNode;
-//     xmlChar *object_type;
-//     while (cur != NULL)
-//     {
-//         if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
-//         {
-//             if ((object_type = xmlGetProp(cur, (const xmlChar *)"type")) != NULL )
-//             {
-//                 cout << "object type: " << object_type << endl;
-//                 //AddObjectToScene(string((char*)object_type), cur);
-//             }
-//             xmlFree(object_type);
-//         }
-//         cur = cur->next;
-//     }
 
-
-//test xpath
+    //test xpath
     AddObjectToScene(doc, "sphere");
     AddObjectToScene(doc, "plan");
+    AddObjectToScene(doc, "light");
 
     xmlFreeDoc(doc);
     return true;
@@ -100,7 +86,7 @@ bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
     {
         cout << "Error: unable to evaluate xpath expression"<< BAD_CAST xpathExpr << endl;
         xmlXPathFreeContext(xpathCtx);
-        xmlFreeDoc(doc);
+        //xmlFreeDoc(doc);
         return false;
     }
 
@@ -109,18 +95,21 @@ bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
     {
         cout << "No nodes found matching: "<< BAD_CAST xpathExpr << endl;
         xmlXPathFreeContext(xpathCtx);
-        xmlFreeDoc(doc);
+        //xmlFreeDoc(doc);
         return false;
     }
     else
     {
         float x,y,z, value;
+        Color objectColor;
         for (int i = 0; i < nodeset->nodeNr; i++)
         {
+            objectColor.Set(255,255,255);
+
             //cout << nodeset->nodeNr << " sphere(s) found! " << endl;
             if ( object_type == "sphere")
-            {    
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p1");
+            {
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z);
                 GetFloat(nodeset->nodeTab[i], value, BAD_CAST "radius");
 
                 geo = new RSphere(Point(x, y, z), (unsigned int)value );
@@ -128,65 +117,77 @@ bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
             else if (object_type == "plan")
             {
                 Point *a, *b , *c;
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "1");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"1");
                 a = new Point(x,y,z);
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "2");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"2");
                 b = new Point(x,y,z);
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "3");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"3");
                 c = new Point(x,y,z);
 
                 geo = new RPlan(*a, *b, *c);
             }
             else if (object_type == "triangle")
             {
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p1");
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p2");
-                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p3");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p1");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p2");
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p3");
+            }
+            else if (object_type == "light")
+            {
+                if ( GetFloatTriplet(nodeset->nodeTab[i], x, y, z, NULL,
+                                (char*)"color", (char*)"r", (char*)"g", (char*)"b")) {
+                    objectColor.Set((unsigned char)x, (unsigned char)y, (unsigned char)z);
+                }
+                GetFloatTriplet(nodeset->nodeTab[i], x, y, z);
+                Light l = Light(Point(x, y, z), objectColor);
+                LightList.push_back(l);
+                break;
             }
             else {break;}
 
-            //GetColor
-            Color c(255,0,0);
-            r = new RenderableObject(c, geo);
+
+            if ( GetFloatTriplet(nodeset->nodeTab[i], x, y, z,(char*)"p3",
+                                (char*)"color", (char*)"r", (char*)"g", (char*)"b"))
+            {
+                objectColor.Set((unsigned char)x, (unsigned char)y, (unsigned char)z);
+            }
+            r = new RenderableObject(objectColor, geo);
             ObjectList.push_back(r);
         }
+        xmlXPathFreeContext(xpathCtx);
     }
 }
 
-
-// void Scene::GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur)
-// {
-//     
-// }
-
-
-bool Scene::GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* pointId)
+bool Scene::GetFloatTriplet(xmlNodePtr cur, float & x, float & y, float & z,
+                            const char *uniqueId, const char *floatTripletName,
+                            const char *x_name,   const char *y_name,
+                            const char *z_name)
 {
-    if (cur->xmlChildrenNode == NULL)
+   if (cur->xmlChildrenNode == NULL)
         return false;
 
     xmlNodePtr currentNode = xmlCopyNode(cur, 1);
     currentNode = currentNode->xmlChildrenNode;
 
     xmlChar *cx, *cy, *cz, *id = NULL;
-    
+
 
     while ( currentNode != NULL )
     {
-        if (!xmlStrcmp(currentNode->name, (const xmlChar *)"position"))
+        if (!xmlStrcmp(currentNode->name, (const xmlChar *)floatTripletName))
         {
             // check pointId attributes is param pointId != NULL
-            if (pointId != NULL)
+            if (uniqueId != NULL)
             {
                 id = xmlGetProp(currentNode, (const xmlChar *)"id");
                 //cout << "       point id found: " << BAD_CAST id << endl;
             }
-            
-            if ( id == NULL or (id != NULL and  !xmlStrcmp(pointId, id)) )
+
+            if ( id == NULL or (id != NULL and  !xmlStrcmp((xmlChar *) uniqueId, id)) )
             {
-                cx = xmlGetProp(currentNode, (const xmlChar *)"x");
-                cy = xmlGetProp(currentNode, (const xmlChar *)"y");
-                cz = xmlGetProp(currentNode, (const xmlChar *)"z");
+                cx = xmlGetProp(currentNode, (xmlChar *) x_name);
+                cy = xmlGetProp(currentNode, (xmlChar *) y_name);
+                cz = xmlGetProp(currentNode, (xmlChar *) z_name);
 
                 if (cx == NULL or cy == NULL or cz == NULL)
                 {
@@ -197,7 +198,11 @@ bool Scene::GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* p
                 y = atof((char*)cy);
                 z = atof((char*)cz);
 
-                cout << "Position, x:" << x <<", y: " << y << ",z: " << z << endl;
+                cout << BAD_CAST floatTripletName << ", "
+                     << BAD_CAST x_name << ": " << x << ", "
+                     << BAD_CAST y_name << ": " << y << ", "
+                     << BAD_CAST z_name << ": " << z
+                     << endl;
                 return true;
             }
         }
@@ -207,7 +212,7 @@ bool Scene::GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* p
 }
 
 /**
- * get float value for the given children node @name of @cur
+ * Get float value for the given children node @name of @cur
  */
 bool Scene::GetFloat(xmlNodePtr cur, float & value, xmlChar* name)
 {
@@ -234,7 +239,7 @@ bool Scene::GetFloat(xmlNodePtr cur, float & value, xmlChar* name)
 }
 
 /**
- * init the scene
+ * Init the scene
  */
 void Scene::GenerateScene()
 {
@@ -258,10 +263,10 @@ void Scene::GenerateScene()
     ObjectList.push_back(r);
 
 
-//       Color c4(255, 0, 0);
-       Point p4(0,200,150);
-//       r = new RenderableObject(c4, new RPoint(p4));
-//       ObjectList.push_back(r);
+//      Color c4(255, 0, 0);
+        Point p4(0,200,150);
+//      r = new RenderableObject(c4, new RPoint(p4));
+//      ObjectList.push_back(r);
 
 
     Color c5(125, 0, 0);
@@ -275,10 +280,6 @@ void Scene::GenerateScene()
 //     Color c7(0, 255, 0);
 //     r = new RenderableObject(c7, new RTriangle(Point(0,0,0), Point(50,0,0), Point(0,50,0), 10, 10));
 //     ObjectList.push_back(r);
-
-    // Append a new light to the scene
-    Light l = Light(p4, Color(255,255,255));
-    LightList.push_back(l);
 }
 
 
@@ -295,8 +296,8 @@ void Scene::Render()
     Point   intersec(0,0,0);
     float   d, distance, d2, distance2;
     bool    pixelInShadow;
-    Ray *   r = new Ray(v, p);
-    ScreenPoint * sp = NULL;
+    Ray     *r = new Ray(v, p);
+    ScreenPoint *sp = NULL;
 
     while ( (sp = camera->GetNextScreenPoint()) != NULL )
     {
@@ -347,7 +348,6 @@ void Scene::Render()
 
 
             //cout << "Vector intersection to light : "<<light_vector << endl;
-
             // Check light_vector and intersection normal
             Vector v_normal = last_intersection_obj->geo->GetNormal(p_intersection);
 
