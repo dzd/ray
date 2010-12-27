@@ -36,8 +36,8 @@ private:
 
 public:
     RenderableObject(Color c, Geometry * g);
-    void SetVisible(bool v=true) { isVisible = v; }
-    Color GetColor() {return color;}
+    void SetVisible(bool v=true)    { isVisible = v;}
+    Color GetColor()                {return color;}
 
     int GetId() {return object_id;}
 };
@@ -83,8 +83,8 @@ private:
 public:
     RSphere(Point p, unsigned int r);
 
-    bool    GetIntersection(Ray & r, float & distance);
-    Vector  GetNormal(Point & p);
+    bool   GetIntersection(Ray & r, float & distance);
+    Vector GetNormal(Point & p);
     static map<string, string> & GetMandatoryAttributes();
 };
 

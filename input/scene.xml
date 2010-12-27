@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <scene> 
     <object name="sphere1" type="sphere">
-            <radius>130</radius>
-            <position x="150" y="150" z="300"></position>
+        <position x="150" y="150" z="300" id="p1"/>
+        <color    r="255" g="0"  b="0"/>
+        <radius>130</radius>
     </object>
 
     <object name="plan1" type="plan">
-            <position x="0"   y="0"  z="0"></position>
-            <position x="100" y="0"  z="0"></position>
-            <position x="0"   y="10" z="100"></position>
+            <position id="1" x="0"   y="0"  z="0"/>
+            <position id="2" x="100" y="0"  z="0"/>
+            <position id="3" x="0"   y="10" z="100"/>
+            <color    r="0"  g="255" b="0"/>
     </object>
-    
-    <object name="foo" type="foo">
-            <position x="0"   y="0"  z="0"></position>
+
+    <object name="light1" type="light">
+            <position x="0"   y="0"  z="0"/>
+            <color    r="0"   g="0"  b="0"/>
     </object>
-    
-    <object name="foo2">
-            <position x="0" y="0"  z="0"></position>
+
+    <object name="sphere2" type="sphere">
+        <position x="150" y="151" z="300"/>
+        <color    r="255" g="0"  b="0"/>
+        <radius>130</radius>
     </object>
 </scene>

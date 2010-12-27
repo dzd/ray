@@ -45,20 +45,25 @@ bool Scene::LoadSceneFile(string filename)
     }
 
     cur = cur->xmlChildrenNode;
-    xmlChar *object_type;
-    while (cur != NULL)
-    {
-        if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
-        {
-            if ((object_type = xmlGetProp(cur, (const xmlChar *)"type")) != NULL )
-            {
-                cout << "object type: " << object_type << endl;
-                AddObjectToScene(string((char*)object_type), cur);
-            }
-            xmlFree(object_type);
-        }
-        cur = cur->next;
-    }
+//     xmlChar *object_type;
+//     while (cur != NULL)
+//     {
+//         if ((!xmlStrcmp(cur->name, (const xmlChar *)"object")))
+//         {
+//             if ((object_type = xmlGetProp(cur, (const xmlChar *)"type")) != NULL )
+//             {
+//                 cout << "object type: " << object_type << endl;
+//                 //AddObjectToScene(string((char*)object_type), cur);
+//             }
+//             xmlFree(object_type);
+//         }
+//         cur = cur->next;
+//     }
+
+
+//test xpath
+    AddObjectToScene(doc, "sphere");
+    AddObjectToScene(doc, "plan");
 
     xmlFreeDoc(doc);
     return true;
@@ -67,27 +72,166 @@ bool Scene::LoadSceneFile(string filename)
 /**
  * Instanciate objects and appends them to the list.
  */
-void Scene::AddObjectToScene(string object_type, xmlNodePtr cur)
+bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
 {
-    map<string, string> attributes;
-    RenderableObject    *currentObj;
+    xmlXPathContextPtr xpathCtx;
+    xmlXPathObjectPtr xpathObj;
 
-    // TODO: use synonyms instead of hardcoded strings.
-    if ( object_type == "sphere")
+    RenderableObject    *r;
+    Geometry            *geo;
+
+    string xpath_str = "/scene/object[@type=\""+object_type+"\"]";
+    cout << "xpath string: " << xpath_str << endl;
+
+    xmlChar* xpathExpr = (xmlChar*) xpath_str.c_str();
+
+    /* Create xpath evaluation context */
+    xpathCtx = xmlXPathNewContext(doc);
+    if(xpathCtx == NULL)
     {
-        attributes = RSphere::GetMandatoryAttributes();
-        GetAttributesValues(attributes, cur);
-        //currentObj = new RSphere();
+        cout <<"Error: unable to create new XPath context"<< endl;
+        xmlFreeDoc(doc);
+        return false;
+    }
+
+    /* Evaluate xpath expression */
+    xpathObj = xmlXPathEvalExpression(xpathExpr, xpathCtx);
+    if(xpathObj == NULL)
+    {
+        cout << "Error: unable to evaluate xpath expression"<< BAD_CAST xpathExpr << endl;
+        xmlXPathFreeContext(xpathCtx);
+        xmlFreeDoc(doc);
+        return false;
+    }
+
+    xmlNodeSetPtr nodeset = xpathObj->nodesetval;
+    if (nodeset->nodeNr <= 0)
+    {
+        cout << "No nodes found matching: "<< BAD_CAST xpathExpr << endl;
+        xmlXPathFreeContext(xpathCtx);
+        xmlFreeDoc(doc);
+        return false;
+    }
+    else
+    {
+        float x,y,z, value;
+        for (int i = 0; i < nodeset->nodeNr; i++)
+        {
+            //cout << nodeset->nodeNr << " sphere(s) found! " << endl;
+            if ( object_type == "sphere")
+            {    
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p1");
+                GetFloat(nodeset->nodeTab[i], value, BAD_CAST "radius");
+
+                geo = new RSphere(Point(x, y, z), (unsigned int)value );
+            }
+            else if (object_type == "plan")
+            {
+                Point *a, *b , *c;
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "1");
+                a = new Point(x,y,z);
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "2");
+                b = new Point(x,y,z);
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "3");
+                c = new Point(x,y,z);
+
+                geo = new RPlan(*a, *b, *c);
+            }
+            else if (object_type == "triangle")
+            {
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p1");
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p2");
+                GetPoint(nodeset->nodeTab[i], x, y, z, BAD_CAST "p3");
+            }
+            else {break;}
+
+            //GetColor
+            Color c(255,0,0);
+            r = new RenderableObject(c, geo);
+            ObjectList.push_back(r);
+        }
     }
 }
 
-void Scene::GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur)
+
+// void Scene::GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur)
+// {
+//     
+// }
+
+
+bool Scene::GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* pointId)
 {
+    if (cur->xmlChildrenNode == NULL)
+        return false;
+
+    xmlNodePtr currentNode = xmlCopyNode(cur, 1);
+    currentNode = currentNode->xmlChildrenNode;
+
+    xmlChar *cx, *cy, *cz, *id = NULL;
     
+
+    while ( currentNode != NULL )
+    {
+        if (!xmlStrcmp(currentNode->name, (const xmlChar *)"position"))
+        {
+            // check pointId attributes is param pointId != NULL
+            if (pointId != NULL)
+            {
+                id = xmlGetProp(currentNode, (const xmlChar *)"id");
+                //cout << "       point id found: " << BAD_CAST id << endl;
+            }
+            
+            if ( id == NULL or (id != NULL and  !xmlStrcmp(pointId, id)) )
+            {
+                cx = xmlGetProp(currentNode, (const xmlChar *)"x");
+                cy = xmlGetProp(currentNode, (const xmlChar *)"y");
+                cz = xmlGetProp(currentNode, (const xmlChar *)"z");
+
+                if (cx == NULL or cy == NULL or cz == NULL)
+                {
+                    return false;
+                }
+
+                x = atof((char*)cx);
+                y = atof((char*)cy);
+                z = atof((char*)cz);
+
+                cout << "Position, x:" << x <<", y: " << y << ",z: " << z << endl;
+                return true;
+            }
+        }
+        currentNode = currentNode->next;
+    }
+    return false;
 }
 
+/**
+ * get float value for the given children node @name of @cur
+ */
+bool Scene::GetFloat(xmlNodePtr cur, float & value, xmlChar* name)
+{
+    if (cur->xmlChildrenNode == NULL)
+        return false;
 
+    xmlNodePtr currentNode = xmlCopyNode(cur, 1);
+    currentNode = currentNode->xmlChildrenNode;
 
+    xmlChar *value_c;
+
+    while ( currentNode != NULL )
+    {
+        if (!xmlStrcmp(currentNode->name, name))
+        {
+            value_c = xmlNodeGetContent(currentNode);
+            cout << "value: " << BAD_CAST value_c << endl;
+            value = atof((char*)value_c);
+            return true;
+        }
+        currentNode = currentNode->next;
+    }
+    return false;
+}
 
 /**
  * init the scene
@@ -179,7 +323,7 @@ void Scene::Render()
                 }
             }
         }
-//cout << "out" << endl;
+        //cout << "out" << endl;
         // now iterate throught scene's light list to compute pixel color
         if (distance == -1 ) continue;
 
@@ -190,14 +334,14 @@ void Scene::Render()
                                       r_orig->Y() + distance * r_vector->Y(),
                                       r_orig->Z() + distance * r_vector->Z());
 
-//        cout << "intersection: " << p_intersection << endl;
+        //cout << "intersection: " << p_intersection << endl;
 
         pixelInShadow = false;
         list<Light>::iterator light_it = LightList.begin();
         for(;light_it != LightList.end(); light_it++)
         {
             Point o_light = light_it->GetPosition();
-//            cout << "light position: "<< o_light << endl;
+            //cout << "light position: "<< o_light << endl;
             // get a unit vector with intersection and light source
             Vector light_vector = Vector( p_intersection, o_light);
 

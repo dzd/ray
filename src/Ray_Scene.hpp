@@ -6,6 +6,8 @@
 
 #include <libxml/xmlmemory.h>
 #include "libxml/parser.h"
+#include <libxml/xpath.h>
+
 
 #include "Ray_RenderableObject.hpp"
 #include "Ray_Camera.hpp"
@@ -23,9 +25,19 @@ private:
     list<Light>             LightList;
     Camera *                camera;
 
+//test
+    bool AddSphereToScene(xmlDocPtr doc);
+    bool AddObjectToScene(xmlDocPtr doc, string object_type);
+    
+    bool GetPoint(xmlNodePtr cur, float & x, float & y, float & z, xmlChar* pointId = NULL);
+    bool GetFloat(xmlNodePtr cur, float & value, xmlChar* name = NULL);
+
+
     bool LoadSceneFile(string filename);
-    void AddObjectToScene(string object_type, xmlNodePtr cur);
-    void GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur);
+
+    //void AddObjectToScene(string object_type, xmlNodePtr cur);
+    //void GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur);
+    //bool GetPoint(xmlNodePtr cur, float & x, float & y, float & z);
 
 public:
     Scene();
