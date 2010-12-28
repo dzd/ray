@@ -81,5 +81,14 @@ void Color::Normalize()
 
 }
 
+void Color::Set(unsigned char r, unsigned char g, unsigned char b)
+{
+    this->r =r;
+    this->g =g;
+    this->b =b;
+
+    Normalize();
+}
+
 
 ostream & operator<<(ostream &o, Color & c) { return o << "[" << (int)c.r << "," << (int)c.g << "," << (int)c.b << "]"; }

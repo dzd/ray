@@ -1,9 +1,11 @@
 #ifndef _RAY_RENDERABLE_OBJ_
 #define _RAY_RENDERABLE_OBJ_
 
+#include <iostream>
+
 #include <cmath>
 
-#include <vector>
+#include <map>
 
 #include "Ray_Math.hpp"
 #include "Ray_Color.hpp"
@@ -34,8 +36,8 @@ private:
 
 public:
     RenderableObject(Color c, Geometry * g);
-    void SetVisible(bool v=true) { isVisible = v; }
-    Color GetColor() {return color;}
+    void SetVisible(bool v=true)    { isVisible = v;}
+    Color GetColor()                {return color;}
 
     int GetId() {return object_id;}
 };
@@ -51,6 +53,8 @@ public:
 
     virtual bool GetIntersection(Ray & r, float & distance) = 0;
     virtual Vector GetNormal(Point & p) = 0;
+
+    //static list< set<string> > GetMandatoryAttributes() {}
 };
 
 /**
@@ -71,14 +75,17 @@ public:
 class RSphere : public Geometry
 {
 private:
-    Point * Center;
-    unsigned int      Radius;
+    Point                       *Center;
+    unsigned int                Radius;
+    static map<string, string>  mandatoryAttributes;
+    static bool                 mandatoryAttributesFilled;
 
 public:
     RSphere(Point p, unsigned int r);
 
-    bool GetIntersection(Ray & r, float & distance);
+    bool   GetIntersection(Ray & r, float & distance);
     Vector GetNormal(Point & p);
+    static map<string, string> & GetMandatoryAttributes();
 };
 
 class RPlan : public Geometry
