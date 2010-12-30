@@ -337,6 +337,8 @@ void Scene::Render()
 
         //cout << "intersection: " << p_intersection << endl;
 
+        Vector v_normal;
+
         pixelInShadow = false;
         list<Light>::iterator light_it = LightList.begin();
         for(;light_it != LightList.end(); light_it++)
@@ -349,7 +351,7 @@ void Scene::Render()
 
             //cout << "Vector intersection to light : "<<light_vector << endl;
             // Check light_vector and intersection normal
-            Vector v_normal = last_intersection_obj->geo->GetNormal(p_intersection);
+            v_normal = last_intersection_obj->geo->GetNormal(p_intersection);
 
             float tmp_dot = dot(v_normal, light_vector);
             if (tmp_dot == 0) { break;}
@@ -359,9 +361,9 @@ void Scene::Render()
             r = new Ray(light_vector, p_intersection);
 
             // check if any intersection is found between this ray and all objects of the scene
-            pixelInShadow = false;
-            distance2   = light_vector.GetNorm();
-            d2          = -1;
+            pixelInShadow   = false;
+            distance2       = light_vector.GetNorm();
+            d2              = -1;
             list<RenderableObject*>::iterator it_obj_2 = ObjectList.begin();
             for (;it_obj_2 != ObjectList.end(); it_obj_2++)
             {
@@ -376,19 +378,32 @@ void Scene::Render()
                     }
                 }
             }
+            // Now compute pixel lighting
+            Color c(0,0,0);
+            if ( ! pixelInShadow )
+            {
+                c = last_intersection_obj->GetColor();
+                c = ComputeLighting(c, v_normal, light_vector);
+            }                 
+            sp->SetColor(c);            
         }
-        // if no intersection, update ScreenPoint Color with light
-        if ( pixelInShadow )
-        {
-            Color c = last_intersection_obj->GetColor();
-            Color c2(50,50,50);
-            c.Minus(c2);
-            sp->SetColor(c);
-        }
-
     }
     cout << "Rendering ended." << endl;
     SnapShot("/tmp/plop.bmp");
+}
+
+/**
+* Use lambertian model to compute difuse lighting
+* dot product of normal and light vector
+*/
+Color Scene::ComputeLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v)
+{
+    Vector * n = normal_v.Normed();
+    Vector * l = light_v.Normed();
+
+    float lambertian = dot(*n, *l);
+    Color c(currentColor);
+    return c * lambertian;
 }
 
 

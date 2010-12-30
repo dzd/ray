@@ -211,13 +211,13 @@ Vector::Vector(Point p1, Point p2)
 
 }
 
-Vector * Vector::Normed()
+Vector * Vector::Normed() const
 {
     float n = GetNorm();
     return new Vector(x/n, y/n, z/n);
 }
 
-float Vector::GetNorm()
+float Vector::GetNorm() const
 {
     return sqrt(x*x+y*y+z*z);
 }
@@ -239,7 +239,7 @@ Ray::Ray(const Vector & v, const Point & o)
 
 //----------------------------------------------------------------------------------------------------
 
-ostream & operator<<(ostream &o, Point  & p) { return o << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")"; }
-ostream & operator<<(ostream &o, Vector & v) { return o << "[" << v.X() << "," << v.Y() << "," << v.Z() << "]"; }
-ostream & operator<<(ostream &o, Ray & r)    { return o << "o:" << *(r.GetOrigin()) << ", v:"<< *(r.GetVector());  }
+ostream & operator<<(ostream &o, const Point  & p) { return o << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")"; }
+ostream & operator<<(ostream &o, const Vector & v) { return o << "[" << v.X() << "," << v.Y() << "," << v.Z() << "]"; }
+ostream & operator<<(ostream &o, const Ray & r)    { return o << "o:" << *(r.GetOrigin()) << ", v:"<< *(r.GetVector());  }
 

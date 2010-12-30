@@ -152,10 +152,8 @@ RPlan::RPlan(Point O, Point A, Point B)
     cout << "OA: " << *OA << endl;
     cout << "OB: " << *OB << endl;
     cout << "VN: " << *VN << endl;
-
-    //VN = new Vector();
-
 }
+
 bool RPlan::GetIntersection(Ray & r, float & distance)
 {
     Matrix3 m1, m2;

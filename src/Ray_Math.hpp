@@ -54,13 +54,14 @@ private:
     float   x, y, z;
 
 public:
+    Vector() { x=0; y=0; z=0; }
     Vector(float x, float y, float z) {this->x=x; this->y=y; this->z=z;}
     Vector(Point p1, Point p2);
 
     Vector(const Vector& v) {x=v.x; y=v.y; z=v.z;}
 
-    Vector * Normed();
-    float GetNorm();
+    Vector * Normed() const;
+    float GetNorm() const;
 
     float X() const {return x;}
     float Y() const {return y;}
@@ -78,8 +79,8 @@ public:
     Ray(Vector & v, Point & o);
     Ray(const Vector & v, const Point & o);
 
-    Vector * GetVector() { return v; }
-    Point * GetOrigin() { return o; }
+    Vector * GetVector() const { return v; }
+    Point  * GetOrigin() const { return o; }
 };
 
 /*Global ressources*/
@@ -92,9 +93,9 @@ Vector  operator-(Point & p1, Point & p2);
 Vector cross(const Vector& v1, const Vector &v2);
 float dot(const Vector& v1, const Vector &v2);
 
-ostream & operator<<(ostream &o, Point  & p);
-ostream & operator<<(ostream &o, Vector & v);
-ostream & operator<<(ostream &o, Ray & r);
-ostream & operator<<(ostream & o, const Matrix3 & m);
+ostream & operator<<(ostream &o, const Point  & p);
+ostream & operator<<(ostream &o, const Vector & v);
+ostream & operator<<(ostream &o, const Ray & r);
+ostream & operator<<(ostream &o, const Matrix3 & m);
 
 #endif //_RAY_MATH_

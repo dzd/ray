@@ -2,33 +2,33 @@
 <scene> 
     <object name="sphere1" type="sphere">
         <position x="150" y="150" z="300" id="p1"/>
-        <color    r="255" g="0"  b="0"/>
+        <color    r="240" g="50"  b="10"/>
         <radius>130</radius>
     </object>
 
     <object name="plan1" type="plan">
-        <position id="1" x="0"   y="0"  z="0"/>
-        <position id="2" x="100" y="0"  z="0"/>
-        <position id="3" x="0"   y="10" z="100"/>
-        <color    r="10"  g="10" b="10"/>
+        <position id="1" x="0"   y="30"  z="0"/>
+        <position id="2" x="100" y="30"  z="0"/>
+        <position id="3" x="0"   y="40" z="100"/>
+        <color    r="200"  g="200" b="200"/>
     </object>
 
 
     <object name="sphere2" type="sphere">
-        <position x="400" y="151" z="300"/>
-        <color    r="244" g="11"  b="131"/>
+        <position x="350" y="180" z="300"/>
+        <color    r="11" g="244"  b="131"/>
         <radius>130</radius>
     </object>
 
    <object name="sphere3" type="sphere">
         <position x="200" y="401" z="300"/>
-        <color    r="0"   g="0"   b="250"/>
+        <color    r="50"   g="10"   b="240"/>
         <radius>160</radius>
     </object>
 
     <object name="light1" type="light">
-        <position x="600" y="150" z="0"/>
-        <color    r="0"   g="0"   b="0"/>
+        <position x="500" y="400" z="0"/>
+        <color    r="255"   g="255"   b="255"/>
     </object>
 
 </scene>

@@ -53,6 +53,18 @@ void Color::Minus(const Color & c)
     Normalize();
 }
 
+Color Color::operator*(float coef)
+{
+    Color c;
+    float rf = (float) this->r;
+    float gf = (float) this->g;
+    float bf = (float) this->b;
+    c.Set((unsigned char)(rf * coef), (unsigned char)(gf * coef), (unsigned char)(bf * coef));
+    c.Normalize();
+    return c;
+}
+
+
 void Color::Show()
 {
     cout <<"|"<<(int)r<<"|"<<(int)g<<"|"<<(int)b<<"|"<<endl;

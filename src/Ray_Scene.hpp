@@ -32,9 +32,10 @@ private:
     bool GetFloatTriplet(xmlNodePtr cur, float & x, float & y, float & z,
                          const char *uniqueId=NULL, const char *floatTripletName="position",
                          const char *x_name="x",    const char *y_name="y", const char *z_name="z");
-
     bool GetFloat(xmlNodePtr cur, float & value, xmlChar* name = NULL);
 
+
+    inline Color ComputeLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
 
     bool LoadSceneFile(string filename);
 
