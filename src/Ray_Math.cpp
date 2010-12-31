@@ -146,7 +146,7 @@ bool Matrix3::inverse(Matrix3 & mresult)
     return true;
 }
 
-Vector  operator*(Matrix3 &m, Vector& v)
+Vector  operator*(const Matrix3 &m, const Vector& v)
 {
     float vx = v.X();
     float vy = v.Y();
@@ -222,6 +222,24 @@ float Vector::GetNorm() const
     return sqrt(x*x+y*y+z*z);
 }
 
+/**
+* Rotation of the vector around axis @axis_v with an angle of @angle in radian 
+*/
+Vector Vector::Rotate(const Vector & axis_v, float angle) const
+{
+    float ux = axis_v.X();
+    float uy = axis_v.Y();
+    float uz = axis_v.Z();
+
+    Matrix3 P(ux*ux, ux*uy, ux*uz, ux*uy, uy*uy, uy*uz, ux*uz, uy*uz, uz*uz);
+    Matrix3 I(1, 0, 0, 0, 1, 0, 0, 0, 1);
+    Matrix3 Q(1, -uz, uy, uz, 0, -ux, -uy, ux, 0);
+
+    Matrix3 R = P + (I - P) * cos(angle) + Q * sin(angle);
+    return R * *this;
+}
+
+
 //----------------------------------------------------------------------------------------------------
 // TODO: suppress this consructor (replaced by the const one)
 Ray::Ray(Vector & v, Point & o)
@@ -239,7 +257,57 @@ Ray::Ray(const Vector & v, const Point & o)
 
 //----------------------------------------------------------------------------------------------------
 
-ostream & operator<<(ostream &o, const Point  & p) { return o << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")"; }
-ostream & operator<<(ostream &o, const Vector & v) { return o << "[" << v.X() << "," << v.Y() << "," << v.Z() << "]"; }
-ostream & operator<<(ostream &o, const Ray & r)    { return o << "o:" << *(r.GetOrigin()) << ", v:"<< *(r.GetVector());  }
+ostream & operator<<(ostream &o, const Point  & p) 
+{ 
+    return o << "(" << p.X() << "," << p.Y() << "," << p.Z() << ")"; 
+}
+
+ostream & operator<<(ostream &o, const Vector & v) 
+{ 
+    return o << "[" << v.X() << "," << v.Y() << "," << v.Z() << "]"; 
+}
+
+ostream & operator<<(ostream &o, const Ray & r)    
+{
+    return o << "o:" << *(r.GetOrigin()) << ", v:"<< *(r.GetVector());  
+}
+
+Matrix3 operator+(const Matrix3 &m1, const Matrix3 &m2)
+{   
+    Matrix3 m;
+    for(int i = 1; i<=3; i++)
+    {
+        for(int j = 1; j<=3; j++)
+        {
+            m.setAt(i,j, m1.at(i,j) + m2.at(i,j));
+        }
+    }
+    return m;
+}
+
+Matrix3 operator-(const Matrix3 &m1, const Matrix3 &m2)
+{   
+    Matrix3 m;
+    for(int i = 1; i<=3; i++)
+    {
+        for(int j = 1; j<=3; j++)
+        {
+            m.setAt(i,j, m1.at(i,j) - m2.at(i,j));
+        }
+    }
+    return m;
+}
+
+Matrix3 operator*(const Matrix3 &m1, const float coef)
+{   
+    Matrix3 m;
+    for(int i = 1; i<=3; i++)
+    {
+        for(int j = 1; j<=3; j++)
+        {
+            m.setAt(i,j, m1.at(i,j)*coef);
+        }
+    }
+    return m;
+}
 

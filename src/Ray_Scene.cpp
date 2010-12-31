@@ -297,6 +297,7 @@ void Scene::Render()
     float   d, distance, d2, distance2;
     bool    pixelInShadow;
     Ray     *r = new Ray(v, p);
+    Ray     *ray_light_intserc = NULL;
     ScreenPoint *sp = NULL;
 
     while ( (sp = camera->GetNextScreenPoint()) != NULL )
@@ -383,9 +384,15 @@ void Scene::Render()
             if ( ! pixelInShadow )
             {
                 c = last_intersection_obj->GetColor();
+                //c.Show();
                 c = ComputeLighting(c, v_normal, light_vector);
+                //c.Show();
+                c = ComputeSpecularLighting(c, v_normal, light_vector, *r_vector, 1.1);
+                cout << "ray: "<< *r << ", specular lighting: ";
+                c.Show();
             }                 
-            sp->SetColor(c);            
+            sp->SetColor(c);
+            cout<< "--pixel written\n";
         }
     }
     cout << "Rendering ended." << endl;
@@ -404,6 +411,36 @@ Color Scene::ComputeLighting(const Color & currentColor, const Vector & normal_v
     float lambertian = dot(*n, *l);
     Color c(currentColor);
     return c * lambertian;
+}
+
+
+/**
+* Use Phong reflection model to compute specular lighting
+* dot product of reflected light vector and observer point to intersection point power @alpha
+*/
+Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v,
+                                         const Vector & light_v, const Vector & observer_v, float alpha)
+{
+    //compute reflected ray
+    Vector rot_axis_v = cross(light_v, normal_v);
+    Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
+
+    Vector * o = observer_v.Normed();
+    Vector * r = reflected_light_v.Normed();
+    float phong_term = dot(*o, *r);
+
+
+    if (phong_term > 0)
+    {   
+        Color c(currentColor);
+        float phong_coef = powf(phong_term, alpha);
+
+        cout << "o: "<< *o << ", r: "<< *r << ", phong_coef: " << phong_coef << endl;
+        c.Add(c * phong_coef);
+        return c;    
+    }
+
+    return currentColor;
 }
 
 

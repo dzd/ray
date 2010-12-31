@@ -36,7 +36,8 @@ private:
 
 
     inline Color ComputeLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
-
+    inline Color ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v,
+                                         const Vector & light_v, const Vector & observer_v, float alpha);
     bool LoadSceneFile(string filename);
 
     //void AddObjectToScene(string object_type, xmlNodePtr cur);
