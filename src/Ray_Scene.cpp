@@ -290,15 +290,17 @@ void Scene::Render()
 {
     cout << "Rendering  started." << endl;
 
-    Vector  v(0,0,1);
-    Point   p(0,0,0);
-
-    Point   intersec(0,0,0);
-    float   d, distance, d2, distance2;
-    bool    pixelInShadow;
-    Ray     *r = new Ray(v, p);
-    Ray     *ray_light_intserc = NULL;
-    ScreenPoint *sp = NULL;
+    Vector      v(0,0,1);
+    Point       p(0,0,0);
+    Point       intersec(0,0,0);
+    float       d,
+                distance,
+                d2,
+                distance2;
+    bool        pixelInShadow;
+    Ray         *r                  = NULL;
+    Ray         *ray_light_intersec = NULL;
+    ScreenPoint *sp                 = NULL;
 
     while ( (sp = camera->GetNextScreenPoint()) != NULL )
     {
@@ -358,8 +360,9 @@ void Scene::Render()
             if (tmp_dot == 0) { break;}
 
             // create a ray with the intersection and the light point
-            delete r;
-            r = new Ray(light_vector, p_intersection);
+            //delete r;
+            //r = new Ray(light_vector, p_intersection);
+            ray_light_intersec = new Ray(light_vector, p_intersection);
 
             // check if any intersection is found between this ray and all objects of the scene
             pixelInShadow   = false;
@@ -368,7 +371,7 @@ void Scene::Render()
             list<RenderableObject*>::iterator it_obj_2 = ObjectList.begin();
             for (;it_obj_2 != ObjectList.end(); it_obj_2++)
             {
-                if ((*it_obj_2)->geo->GetIntersection(*r, d2))
+                if ((*it_obj_2)->geo->GetIntersection(*ray_light_intersec, d2))
                 {
                     //cout << "intersection2 found: " << distance2 << endl;
                     if (  d2 > 0.1 && d2 < distance2 )
@@ -383,16 +386,24 @@ void Scene::Render()
             Color c(0,0,0);
             if ( ! pixelInShadow )
             {
+
+                // compute reflected ray
+                /*
+                Vector rot_axis_v = cross(light_v, normal_v);
+                Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
+                */
                 c = last_intersection_obj->GetColor();
                 //c.Show();
                 c = ComputeLighting(c, v_normal, light_vector);
+                //cout << "initial ray: "<< *r << ", diffuse lighting: ";                                
                 //c.Show();
-                c = ComputeSpecularLighting(c, v_normal, light_vector, *r_vector, 1.1);
-                cout << "ray: "<< *r << ", specular lighting: ";
-                c.Show();
+                c = ComputeSpecularLighting(c, v_normal, light_vector, *r_vector, 2);
+                //cout << "initial ray: "<< *r << ", specular lighting: ";
+                //c.Show();
             }                 
             sp->SetColor(c);
-            cout<< "--pixel written\n";
+            //cout<< "--pixel written\n";
+            delete ray_light_intersec;
         }
     }
     cout << "Rendering ended." << endl;
@@ -415,6 +426,15 @@ Color Scene::ComputeLighting(const Color & currentColor, const Vector & normal_v
 
 
 /**
+* Ambiant lighting
+
+Color Scene::ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef)
+{
+    return c * ambiant_coef;
+}
+*/
+
+/**
 * Use Phong reflection model to compute specular lighting
 * dot product of reflected light vector and observer point to intersection point power @alpha
 */
@@ -422,9 +442,32 @@ Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & 
                                          const Vector & light_v, const Vector & observer_v, float alpha)
 {
     //compute reflected ray
-    Vector rot_axis_v = cross(light_v, normal_v);
-    Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
+    //Vector rot_axis_v = cross(light_v, normal_v);
+    //Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
+    Vector reflected_light_v = light_v.Reflection(normal_v);
 
+    Vector * o = observer_v.Normed();
+    Vector * r = reflected_light_v.Normed();
+    float phong_term = dot(*o, *r);
+
+
+    if (phong_term > 0)
+    {   
+        Color c(currentColor);
+        float phong_coef = powf(phong_term, alpha) * 0.5;
+
+        //cout << "o: "<< *o << ", r: "<< *r << ", phong_coef: " << phong_coef << endl;
+        c.Add(c * phong_coef);
+        return c;    
+    }
+
+    return currentColor;
+}
+/** reflection test in progress...
+
+Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & reflected_v,
+                                     const Vector & observer_v,  float alpha)
+{
     Vector * o = observer_v.Normed();
     Vector * r = reflected_light_v.Normed();
     float phong_term = dot(*o, *r);
@@ -439,10 +482,9 @@ Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & 
         c.Add(c * phong_coef);
         return c;    
     }
-
     return currentColor;
 }
-
+*/
 
 /**
  * Provides a snapshot of the scene

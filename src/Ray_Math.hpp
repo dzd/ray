@@ -63,6 +63,8 @@ public:
     Vector * Normed() const;
     float GetNorm() const;
 
+    Vector Reflection(const Vector & Normal_v) const;
+
     Vector Rotate(const Vector & axis_v, float angle) const;
 
     float X() const {return x;}
@@ -87,7 +89,10 @@ public:
 
 /*Global ressources*/
 float   operator*(Vector& v1, Vector &v2);
-Vector  operator*(float f, Vector &v);
+Vector  operator+(const Vector& v1, const Vector &v2);
+Vector  operator-(const Vector& v1, const Vector &v2);
+Vector  operator*(float f, const Vector &v);
+
 Vector  operator*(const Matrix3 &m,  const Vector& v);
 Matrix3 operator+(const Matrix3 &m1, const Matrix3 &m2);
 Matrix3 operator-(const Matrix3 &m1, const Matrix3 &m2);

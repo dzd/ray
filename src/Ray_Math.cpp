@@ -169,9 +169,19 @@ float operator*(Vector& v1, Vector &v2)
 }
 
 
-Vector operator*(float f, Vector &v)
+Vector operator*(float f, const Vector &v)
 {
     return Vector(f*v.X(), f*v.Y(), f*v.Z());
+}
+
+Vector  operator+(const Vector& v1, const Vector &v2)
+{
+    return Vector(v1.X()+v2.X(), v1.Y()+v2.Y(), v1.Z()+v2.Z());
+}
+
+Vector  operator-(const Vector& v1, const Vector &v2)
+{
+    return Vector(v1.X()-v2.X(), v1.Y()-v2.Y(), v1.Z()-v2.Z());
 }
 
 Vector operator-(Point & p1, Point & p2)
@@ -237,6 +247,39 @@ Vector Vector::Rotate(const Vector & axis_v, float angle) const
 
     Matrix3 R = P + (I - P) * cos(angle) + Q * sin(angle);
     return R * *this;
+}
+
+/**
+* Returns a reflected vector using normal vector @Normal_v
+* or a null vector (vector(0,0,0)) else
+*/
+Vector Vector::Reflection(const Vector & Normal_v) const
+{   
+
+    Vector *i = this->Normed();
+    Vector *n = Normal_v.Normed();
+/*    //Get angle between normal and incomming vector
+    // We take the dot product between normal and incident vector 
+    // which is the cosine of the angle 180 - i where i is the angle between
+    // incomming vector and normal
+    float normal_vector_angle = M_PI - acos(dot(*n, *i));
+    float incindent_angle = (M_PI / 2.0) - normal_vector_angle;
+    
+    cout << "angle normal vector: " << normal_vector_angle << " rad" << endl;
+    cout << "angle incident: "      << incindent_angle << " rad" << endl;
+
+    //TODO: check when no reflection is expected?? -> angle > 90° or < 0° ? 
+
+    // Get rotation axis with a cross product between the two vectors
+    Vector rot_axis_v = cross(*i, *n);
+    cout << "Axe de rotation: " << rot_axis_v << endl;
+
+    return Rotate(rot_axis_v, 2.0 * incindent_angle);
+
+*/
+    // Rr = Ri - 2 N (Ri . N)
+    Vector Vr = *i - (dot(*i, *n) * (2 * *n));
+    return Vr;
 }
 
 

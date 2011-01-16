@@ -22,7 +22,8 @@ public:
     void Add   (const Color & c);
     void Minus (const Color & c);
     Color operator*(float coef);
-    void Set(unsigned char r, unsigned char g, unsigned char b);
+    //void Set(unsigned char r, unsigned char g, unsigned char b);
+    void Set(unsigned int r, unsigned int g, unsigned int b);
 
     void Show();
 };

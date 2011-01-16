@@ -4,12 +4,28 @@ using namespace std;
 #include <string>
 
 #include "Ray_Math.hpp"
+#include "Ray_Color.hpp"
 
 void test_matrix_operators();
 void test_vector_rotation();
 void test_vector();
+void test_matrix3();
+void test_color();
+
+void test_vector_reflection();
 
 int main()
+{
+    test_matrix3();
+    test_matrix_operators();
+    test_vector_rotation();
+    test_vector();
+    test_color();
+    test_vector_reflection();
+    return 0;
+}
+
+void test_matrix3()
 {
     Matrix3 m1(1,2,3,4,5,6,7,8,9);
     Matrix3 m2(-2,2,-3,-1,1,3,2,0,-1);
@@ -30,15 +46,7 @@ int main()
         cout << "m4 inverse is:\n" << m3  << endl;
     else 
         cout << "m4 isn't inversible"<< endl;
-
-
-    test_matrix_operators();
-    test_vector_rotation();
-    test_vector();
-
-    return 0;
 }
-
 
 void test_matrix_operators()
 {
@@ -77,6 +85,32 @@ void test_vector()
 
     float dot_f = dot(v1, v2);
     cout << "v1: " <<v1 << "v2: " <<v2<<"dot(v1, v2)" << dot_f << endl;
+}
+
+void test_color()
+{
+    cout << "TEST: COLOR\n";
+    Color c1(0,0,0);
+    Color c2(240, 125, 13);
+    c1 = c2 * 1.2;
+    
+    c2.Show();
+    c1.Show();
+}
+
+void test_vector_reflection()
+{
+    cout << "TEST: VECTOR REFLECTION\n";
+    Vector v1(-3,-1,0);
+    Vector n(0,2,0);
+
+    Vector v3(v1.Reflection(n));
+
+    cout <<"v1: " << v1 << endl;
+    cout <<"n: " << n << endl;
+    cout <<"v3(reflection): " << v3 << endl;
+
+
 }
 
 
