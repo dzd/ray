@@ -35,7 +35,8 @@ private:
     bool GetFloat(xmlNodePtr cur, float & value, xmlChar* name = NULL);
 
 
-    inline Color ComputeLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
+    inline Color ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef);
+    inline Color ComputeDiffuseLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
     inline Color ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v,
                                          const Vector & light_v, const Vector & observer_v, float alpha);
     bool LoadSceneFile(string filename);

@@ -120,4 +120,15 @@ void Color::Set(unsigned int r, unsigned int g, unsigned int b)
 }
 
 
-ostream & operator<<(ostream &o, Color & c) { return o << "[" << (int)c.r << "," << (int)c.g << "," << (int)c.b << "]"; }
+ostream & operator<<(ostream &o, Color & c) 
+{ 
+    return o << "[" << (int)c.r << "," << (int)c.g << "," << (int)c.b << "]"; 
+}
+
+Color operator+(const Color & c1, const Color & c2)
+{
+    Color c;
+    c.Set((unsigned int)(c1.r+c2.r), (unsigned int)(c1.g+c2.g),(unsigned int)(c1.b+c2.b));
+    return c;
+}
+

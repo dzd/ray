@@ -247,39 +247,6 @@ void Scene::GenerateScene()
     if (LoadSceneFile("./input/scene.xml"))
     return;
 
-    RenderableObject * r;
-
-    Color c1(255, 0, 0);
-    r = new RenderableObject(c1, new RSphere(Point(500,330,700), 130));
-    ObjectList.push_back(r);
-
-    //Temporary hardcoded init of renderable object list
-    Color c(0, 255, 0);
-    r = new RenderableObject(c, new RSphere(Point(180,100,400), 130));
-    ObjectList.push_back(r);
-
-    Color c3(0, 0, 255);
-    r = new RenderableObject(c3, new RSphere(Point(320,240,600), 200));
-    ObjectList.push_back(r);
-
-
-//      Color c4(255, 0, 0);
-        Point p4(0,200,150);
-//      r = new RenderableObject(c4, new RPoint(p4));
-//      ObjectList.push_back(r);
-
-
-    Color c5(125, 0, 0);
-    r = new RenderableObject(c5, new RPlan(Point(0,0,0), Point(100,0,0), Point(0,10,100)));
-    ObjectList.push_back(r);
-
-//     Color c6(200, 0, 0);
-//     r = new RenderableObject(c6, new RTriangle(Point(0,0,0), Point(100,0,0), Point(0,10,100), 10, 10));
-//     ObjectList.push_back(r);
-// 
-//     Color c7(0, 255, 0);
-//     r = new RenderableObject(c7, new RTriangle(Point(0,0,0), Point(50,0,0), Point(0,50,0), 10, 10));
-//     ObjectList.push_back(r);
 }
 
 
@@ -383,25 +350,31 @@ void Scene::Render()
                 }
             }
             // Now compute pixel lighting
-            Color c(0,0,0);
+            Color c_ambiant, c_diffuse, c_specular, c_object, c_result;
+            c_ambiant.Set(0,0,0);
+            c_diffuse.Set(0,0,0);
+            c_specular.Set(0,0,0);
+
+            c_object = last_intersection_obj->GetColor();
+
+            c_ambiant = ComputeAmbiantLighting(c_object, 0.2);
+
             if ( ! pixelInShadow )
             {
 
                 // compute reflected ray
-                /*
-                Vector rot_axis_v = cross(light_v, normal_v);
-                Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
-                */
-                c = last_intersection_obj->GetColor();
+                //TODO: here instead of inside diffuse and specular lighting computation
+
                 //c.Show();
-                c = ComputeLighting(c, v_normal, light_vector);
+                c_diffuse = ComputeDiffuseLighting(c_object, v_normal, light_vector);
                 //cout << "initial ray: "<< *r << ", diffuse lighting: ";                                
                 //c.Show();
-                c = ComputeSpecularLighting(c, v_normal, light_vector, *r_vector, 2);
+                c_specular = ComputeSpecularLighting(c_object, v_normal, light_vector, *r_vector, 2);
                 //cout << "initial ray: "<< *r << ", specular lighting: ";
                 //c.Show();
-            }                 
-            sp->SetColor(c);
+            }            
+            c_result = c_ambiant + c_diffuse + c_specular;
+            sp->SetColor(c_result);
             //cout<< "--pixel written\n";
             delete ray_light_intersec;
         }
@@ -410,11 +383,22 @@ void Scene::Render()
     SnapShot("/tmp/plop.bmp");
 }
 
+
+/**
+* Ambiant lighting
+*/
+Color Scene::ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef)
+{
+    Color c(currentColor);
+    return c * ambiant_coef; 
+}
+
+
 /**
 * Use lambertian model to compute difuse lighting
 * dot product of normal and light vector
 */
-Color Scene::ComputeLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v)
+Color Scene::ComputeDiffuseLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v)
 {
     Vector * n = normal_v.Normed();
     Vector * l = light_v.Normed();
@@ -424,15 +408,6 @@ Color Scene::ComputeLighting(const Color & currentColor, const Vector & normal_v
     return c * lambertian;
 }
 
-
-/**
-* Ambiant lighting
-
-Color Scene::ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef)
-{
-    return c * ambiant_coef;
-}
-*/
 
 /**
 * Use Phong reflection model to compute specular lighting
@@ -457,11 +432,9 @@ Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & 
         float phong_coef = powf(phong_term, alpha) * 0.5;
 
         //cout << "o: "<< *o << ", r: "<< *r << ", phong_coef: " << phong_coef << endl;
-        c.Add(c * phong_coef);
-        return c;    
+        return c * phong_coef;    
     }
-
-    return currentColor;
+    return Color(0,0,0);
 }
 /** reflection test in progress...
 

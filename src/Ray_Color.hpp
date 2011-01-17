@@ -29,6 +29,7 @@ public:
 };
 
 ostream & operator<<(ostream &o, Color & c);
+Color operator+(const Color & c1, const Color & c2);
 
 
 #endif // _RAY_COLOR_
