@@ -6,8 +6,9 @@ using namespace std;
 
 
 
-Scene::Scene()
+Scene::Scene(string filename)
 {
+    this->filename = filename;
     camera = new Camera(Point(0,0,0), Vector(0,0,1), 640, 480);
 
     GenerateScene();
@@ -243,8 +244,8 @@ bool Scene::GetFloat(xmlNodePtr cur, float & value, xmlChar* name)
  */
 void Scene::GenerateScene()
 {
-
-    if (LoadSceneFile("./input/scene.xml"))
+    
+    if (LoadSceneFile(this->filename))
     return;
 
 }

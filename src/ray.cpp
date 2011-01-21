@@ -7,9 +7,14 @@ using namespace std;
 #include "Ray_Image.hpp"
 
 
-int main()
+int main(int argc,char** argv)
 {
-    Scene s;
+    string scenefile = "./input/scene.xml";
+
+    if (argc > 1)
+        scenefile = argv[1];
+
+    Scene s(scenefile);
     s.Render();
 
     return 0;

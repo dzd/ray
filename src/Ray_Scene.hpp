@@ -24,6 +24,7 @@ private:
     list<RenderableObject*> ObjectList;
     list<Light>             LightList;
     Camera *                camera;
+    string                  filename;
 
 //test
     bool AddSphereToScene(xmlDocPtr doc);
@@ -46,7 +47,7 @@ private:
     //bool GetPoint(xmlNodePtr cur, float & x, float & y, float & z);
 
 public:
-    Scene();
+    Scene(string filename);
 
     void GenerateScene();
 
