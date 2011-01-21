@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<scene> 
+
+    <object name="plan1" type="plan">
+        <position id="1" x="0"   y="30"  z="0"/>
+        <position id="2" x="100" y="30"  z="0"/>
+        <position id="3" x="0"   y="40" z="100"/>
+        <color    r="200"  g="200" b="200"/>
+    </object>
+
+    <object name="boule1" type="sphere">
+        <position x="150" y="150" z="300" id="p1"/>
+        <color    r="240" g="50"  b="10"/>
+        <radius>50</radius>
+    </object>
+
+    <object name="boule2" type="sphere">
+        <position x="250" y="150" z="300" id="p1"/>
+        <color    r="240" g="50"  b="10"/>
+        <radius>50</radius>
+    </object>
+
+    <object name="tube_1" type="sphere">
+        <position x="200" y="200" z="300"/>
+        <color    r="11" g="244"  b="131"/>
+        <radius>40</radius>
+    </object>
+
+    <object name="tube_2" type="sphere">
+        <position x="200" y="250" z="300"/>
+        <color    r="255" g="255"  b="255"/>
+        <radius>40</radius>
+    </object>
+
+    <object name="tube_3" type="sphere">
+        <position x="200" y="300" z="300"/>
+        <color    r="11" g="244"  b="131"/>
+        <radius>40</radius>
+    </object>
+    
+    <object name="boule3" type="sphere">
+        <position x="150" y="350" z="300" id="p1"/>
+        <color    r="240" g="50"  b="10"/>
+        <radius>50</radius>
+    </object>
+
+    <object name="boule4" type="sphere">
+        <position x="250" y="350" z="300" id="p1"/>
+        <color    r="240" g="50"  b="10"/>
+        <radius>50</radius>
+    </object>
+    
+    <object name="standalone" type="sphere">
+        <position x="450" y="180" z="300" id="p1"/>
+        <color    r="255" g="255"  b="0"/>
+        <radius>150</radius>
+    </object>
+    
+    <object name="standalone2" type="sphere">
+        <position x="50" y="180" z="500" id="p1"/>
+        <color    r="0" g="255"  b="255"/>
+        <radius>150</radius>
+    </object>
+
+
+    <object name="light1" type="light">
+        <position x="500" y="400" z="0"/>
+        <color    r="255"   g="255"   b="255"/>
+    </object>
+
+</scene>
