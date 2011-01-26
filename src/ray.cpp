@@ -15,7 +15,7 @@ int main(int argc,char** argv)
         scenefile = argv[1];
 
     Scene s(scenefile);
-    s.Render();
+    s.Render2();
 
     return 0;
 }

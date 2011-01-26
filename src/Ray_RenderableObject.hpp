@@ -51,7 +51,7 @@ class Geometry
 public:
     Geometry() {}
 
-    virtual bool GetIntersection(Ray & r, float & distance) = 0;
+    virtual bool GetIntersection(const Ray & r, float & distance) = 0;
     virtual Vector GetNormal(Point & p) = 0;
 
     //static list< set<string> > GetMandatoryAttributes() {}
@@ -68,7 +68,7 @@ private:
 public:
     RPoint(Point & p);
 
-    bool GetIntersection(Ray & r, float & distance);
+    bool GetIntersection(const Ray & r, float & distance);
     Vector GetNormal(Point & p);
 };
 
@@ -83,7 +83,7 @@ private:
 public:
     RSphere(Point p, unsigned int r);
 
-    bool   GetIntersection(Ray & r, float & distance);
+    bool   GetIntersection(const Ray & r, float & distance);
     Vector GetNormal(Point & p);
     static map<string, string> & GetMandatoryAttributes();
 };
@@ -100,7 +100,7 @@ public:
 //     RPlan(Point o, Vector vnormal);
     RPlan(Point O, Point A, Point B);
 
-    bool GetIntersection(Ray & r, float & distance);
+    bool GetIntersection(const Ray & r, float & distance);
     Vector GetNormal(Point & p);
 };
 
@@ -113,7 +113,7 @@ protected:
 public:
     RTriangle(Point O, Point A, Point B, float u, float v);
 
-    bool GetIntersection(Ray & r, float & distance);
+    bool GetIntersection(const Ray & r, float & distance);
 };
 
 class RCube : public Geometry

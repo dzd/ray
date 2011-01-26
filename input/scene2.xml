@@ -51,7 +51,7 @@
     </object>
     
     <object name="standalone" type="sphere">
-        <position x="450" y="180" z="300" id="p1"/>
+        <position x="450" y="50" z="300" id="p1"/>
         <color    r="255" g="255"  b="0"/>
         <radius>150</radius>
     </object>

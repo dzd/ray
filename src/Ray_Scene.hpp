@@ -35,6 +35,7 @@ private:
                          const char *x_name="x",    const char *y_name="y", const char *z_name="z");
     bool GetFloat(xmlNodePtr cur, float & value, xmlChar* name = NULL);
 
+    Color ThrowRay(const Ray & r, const int recurssion_depth);
 
     inline Color ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef);
     inline Color ComputeDiffuseLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
@@ -42,9 +43,14 @@ private:
                                          const Vector & light_v, const Vector & observer_v, float alpha);
     bool LoadSceneFile(string filename);
 
-    //void AddObjectToScene(string object_type, xmlNodePtr cur);
-    //void GetAttributesValues(map<string,string> & attributes, xmlNodePtr cur);
-    //bool GetPoint(xmlNodePtr cur, float & x, float & y, float & z);
+
+// V2 
+    inline Color ComputeSpecularLighting2(const Color & currentColor, const Vector & reflected_ray_v,
+                                          const Vector & observer_v,  float alpha);
+//
+
+
+
 
 public:
     Scene(string filename);
@@ -52,6 +58,9 @@ public:
     void GenerateScene();
 
     void Render();
+
+    //Render replacement
+    void Render2();
 
     void SnapShot(string filename);
 };

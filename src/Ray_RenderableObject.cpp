@@ -20,7 +20,7 @@ RPoint::RPoint(Point & p)
 }
 
 
-bool RPoint::GetIntersection(Ray & r, float & distance)
+bool RPoint::GetIntersection(const Ray & r, float & distance)
 {
 // Create a vector using ray origin and current point
     Vector * p_v1 = new Vector(*(r.GetVector()));
@@ -61,7 +61,7 @@ RSphere::RSphere(Point p, unsigned int r)
 /**
  * RSphere ray's intersection computation
  */
-bool RSphere::GetIntersection(Ray & r, float & distance)
+bool RSphere::GetIntersection(const Ray & r, float & distance)
 {
     // float a;
     double b,c, deltabis;
@@ -154,7 +154,7 @@ RPlan::RPlan(Point O, Point A, Point B)
     cout << "VN: " << *VN << endl;
 }
 
-bool RPlan::GetIntersection(Ray & r, float & distance)
+bool RPlan::GetIntersection(const Ray & r, float & distance)
 {
     Matrix3 m1, m2;
     m1.setAt(1,1, r.GetVector()->X());
@@ -199,7 +199,7 @@ RTriangle::RTriangle(Point O, Point A, Point B, float u, float v) : RPlan(O, A, 
     this->coord_v = v;
 }
 
-bool RTriangle::GetIntersection(Ray & r, float & distance)
+bool RTriangle::GetIntersection(const Ray & r, float & distance)
 {
     if ( RPlan::GetIntersection(r, distance) )
     {
