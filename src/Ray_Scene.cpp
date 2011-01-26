@@ -412,8 +412,7 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
 {
     list<RenderableObject*>::iterator it = ObjectList.begin();
     RenderableObject* last_intersection_obj;
-    float distance = HUGE,
-          d;
+    float distance = HUGE, d;
 
     for (;it != ObjectList.end(); it++)
     {
@@ -425,8 +424,6 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
                 distance = d;
                 Color i_color = (*it)->GetColor();
                 //cout << "Closer intersection found at: "<< distance << " for ray: " << *r << " color:" << i_color << endl;
-                //sp->SetDistance(distance);
-                //sp->SetColor( i_color );
                 // save object which is the closer of the screen
                 last_intersection_obj = *it;
             }
@@ -446,10 +443,10 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
 
     //cout << "intersection: " << p_intersection << endl;
 
-
     // Check light_vector and intersection normal
     Vector v_normal = last_intersection_obj->geo->GetNormal(p_intersection);
     Vector reflected_ray_v = r.GetVector()->Reflection(v_normal);
+
     Ray *  reflected_ray   = new Ray(reflected_ray_v, p_intersection);
 
     Color c_ambiant, c_diffuse, c_specular, c_object, c_result;
@@ -466,7 +463,7 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
         //cout << "Vector intersection to light : "<<light_vector << endl;
 
         float tmp_dot = dot(v_normal, light_vector);
-        if (tmp_dot == 0) { break;}
+        if (tmp_dot == 0 ) { break;}
 
         // create a ray with the intersection and the light point
         //TODO: handle ray_light_intersection deletion
@@ -498,13 +495,13 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
 
         c_object = last_intersection_obj->GetColor();
 
-        c_ambiant = ComputeAmbiantLighting(c_object, 0.2);
+        c_ambiant = ComputeAmbiantLighting(c_object, 0.1);
 
         if ( ! pixelInShadow )
         {
             //TODO: make sure all vector are normed before this step
             c_diffuse  = ComputeDiffuseLighting(c_object, v_normal, light_vector);
-            c_specular = ComputeSpecularLighting2(c_object, reflected_ray_v, *r_vector, 2);
+            c_specular = ComputeSpecularLighting(c_object, v_normal, light_vector, *r_vector, 7);
         }            
         c_result = c_ambiant + c_diffuse + c_specular;
         delete ray_light_intersec;
@@ -512,7 +509,7 @@ Color Scene::ThrowRay(const Ray & r, const int recurssion_depth)
     
     // Now throw the reflected ray
     if (recurssion_depth > 0 )
-        c_result = c_result * 0.8 + ThrowRay(*reflected_ray, recurssion_depth - 1) * 0.2;
+        c_result = c_result * 0.9 + ThrowRay(*reflected_ray, recurssion_depth - 1) * 0.7;
 
     return c_result;
 }
@@ -540,6 +537,7 @@ Color Scene::ComputeDiffuseLighting(const Color & currentColor, const Vector & n
 
     float lambertian = dot(*n, *l);
     Color c(currentColor);
+
     return c * lambertian;
 }
 
@@ -549,8 +547,8 @@ Color Scene::ComputeDiffuseLighting(const Color & currentColor, const Vector & n
 * Use Phong reflection model to compute specular lighting
 * dot product of reflected light vector and observer point to intersection point power @alpha
 */
-Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v,
-                                         const Vector & light_v, const Vector & observer_v, float alpha)
+Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v,
+                                     const Vector & observer_v, float alpha, float coef)
 {
     //compute reflected ray
     //Vector rot_axis_v = cross(light_v, normal_v);
@@ -562,33 +560,10 @@ Color Scene::ComputeSpecularLighting(const Color & currentColor, const Vector & 
     float phong_term = dot(*o, *r);
 
 
-    if (phong_term > 0)
+    if (phong_term > 0.1)
     {   
         Color c(currentColor);
-        float phong_coef = powf(phong_term, alpha) * 0.5;
-
-        //cout << "o: "<< *o << ", r: "<< *r << ", phong_coef: " << phong_coef << endl;
-        return c * phong_coef;    
-    }
-    return Color(0,0,0);
-}
-Color Scene::ComputeSpecularLighting2(const Color & currentColor, const Vector & reflected_ray_v,
-                                      const Vector & observer_v,  float alpha)
-{
-    //compute reflected ray
-    //Vector rot_axis_v = cross(light_v, normal_v);
-    //Vector reflected_light_v = light_v.Rotate(rot_axis_v, M_PI);
-    //Vector reflected_light_v = light_v.Reflection(normal_v);
-
-    Vector * o = observer_v.Normed();
-    Vector * r = reflected_ray_v.Normed();
-    float phong_term = dot(*o, *r);
-
-
-    if (phong_term > 0)
-    {   
-        Color c(currentColor);
-        float phong_coef = powf(phong_term, alpha) * 0.5;
+        float phong_coef = powf(phong_term, alpha) * coef;
 
         //cout << "o: "<< *o << ", r: "<< *r << ", phong_coef: " << phong_coef << endl;
         return c * phong_coef;    

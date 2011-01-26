@@ -156,16 +156,21 @@ RPlan::RPlan(Point O, Point A, Point B)
 
 bool RPlan::GetIntersection(const Ray & r, float & distance)
 {
+    Vector * r_vector = r.GetVector();
+
+    if ( dot(*r_vector, *VN) > 0.9 )
+        return false;
+    
     Matrix3 m1, m2;
-    m1.setAt(1,1, r.GetVector()->X());
+    m1.setAt(1,1, r_vector->X());
     m1.setAt(1,2, OA->X());
     m1.setAt(1,3, OB->X());
 
-    m1.setAt(2,1, r.GetVector()->Y());
+    m1.setAt(2,1, r_vector->Y());
     m1.setAt(2,2, OA->Y());
     m1.setAt(2,3, OB->Y());
 
-    m1.setAt(3,1, r.GetVector()->Z());
+    m1.setAt(3,1, r_vector->Z());
     m1.setAt(3,2, OA->Z());
     m1.setAt(3,3, OB->Z());
 

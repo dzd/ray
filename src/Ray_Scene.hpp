@@ -39,18 +39,9 @@ private:
 
     inline Color ComputeAmbiantLighting(const Color & currentColor, float ambiant_coef);
     inline Color ComputeDiffuseLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v);
-    inline Color ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v,
-                                         const Vector & light_v, const Vector & observer_v, float alpha);
+    inline Color ComputeSpecularLighting(const Color & currentColor, const Vector & normal_v, const Vector & light_v, 
+                                         const Vector & observer_v, float alpha, float coef = 0.5);
     bool LoadSceneFile(string filename);
-
-
-// V2 
-    inline Color ComputeSpecularLighting2(const Color & currentColor, const Vector & reflected_ray_v,
-                                          const Vector & observer_v,  float alpha);
-//
-
-
-
 
 public:
     Scene(string filename);

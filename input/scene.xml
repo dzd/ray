@@ -8,6 +8,7 @@
         <color    r="200"  g="200" b="200"/>
     </object>
 
+
     <object name="sphere1" type="sphere">
         <position x="150" y="150" z="300" id="p1"/>
         <color    r="240" g="50"  b="10"/>
