@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 
+class Vector;
+
+
 class Matrix3
 {
 protected:
@@ -45,6 +48,8 @@ public:
     float X() const {return x;}
     float Y() const {return y;}
     float Z() const {return z;}
+
+    Point Translate(Vector & v) const;
 
 };
 

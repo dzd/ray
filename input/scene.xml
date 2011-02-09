@@ -33,6 +33,23 @@
         <color    r="255"   g="237"   b="17"/>
     </object>
 
+<!--    <object name="test_triangle" type="triangle">-->
+<!--        <position id="1" x="0"   y="100"  z="100"/>-->
+<!--        <position id="2" x="50"   y="0"   z="100"/>-->
+<!--        <position id="3" x="200" y="300"  z="100"/>-->
+<!--        <color    r="255"   g="10"   b="10"/>-->
+<!--        <doubleface>1</doubleface>-->
+<!--    </object>-->
+
+    <object name="test_triangle" type="triangle">
+        <position id="1" x="0"   y="100"  z="100"/>
+        <position id="2" x="50"   y="0"   z="400"/>
+        <position id="3" x="200" y="300"  z="0"/>
+        <color    r="255"   g="10"   b="10"/>
+        <doubleface>1</doubleface>
+    </object>
+
+
     <object name="light1" type="light">
         <position x="500" y="400" z="0"/>
         <color    r="255"   g="255"   b="255"/>
