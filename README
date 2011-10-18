@@ -1,1 +1,13 @@
-First commit :)
+
+env dev setup:
+aclocal
+autoconf (input file configure.ac)
+automake --add-missing (input Makefile.am, output configure)
+
+then run ./configure
+
+
+-> required package: 
+g++
+lixml2-dev
+

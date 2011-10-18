@@ -1,7 +1,5 @@
-CFLAGS = --pedantic -Wall -O2 -I/usr/include/libxml2
-CPPFLAGS = --pedantic -Wall -O2 -I/usr/include/libxml2
-LDFLAGS = -L/usr/lib -lxml2
-
+AM_CPPFLAGS = --pedantic -Wall -O2 ${LIBXML2_CFLAGS} 
+LIBS        = ${LIBXML2_LIBS}
 
 bin_PROGRAMS = ray testmath
 

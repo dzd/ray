@@ -12,6 +12,8 @@ AC_PROG_CXX
 AC_PROG_MAKE_SET
 
 # Checks for libraries.
+#check libxml2 presence
+PKG_CHECK_MODULES(LIBXML2, libxml-2.0)
 
 # Checks for header files.
 
