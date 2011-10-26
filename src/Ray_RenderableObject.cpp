@@ -202,15 +202,40 @@ RTriangle::RTriangle(Point O, Point A, Point B, float u, float v) : RPlan(O, A, 
 {
     this->coord_u = u;
     this->coord_v = v;
+
 }
 
 bool RTriangle::GetIntersection(const Ray & r, float & distance)
 {
     if ( RPlan::GetIntersection(r, distance) )
     {
-        if(RPlan::u < coord_u && RPlan::v < coord_v)
-            return true;
+        // avoid division by 0 ... real case ? 
+//        if (coord_u == 0)
+//            return true;
+
+        // setup line parameter
+        line_slope_a    = - coord_v / coord_u ;
+        y_intersect_b   = coord_v;
+
+        if( RPlan::v > 0 and RPlan::u > 0 )
+        {
+            if(RPlan::v < ( line_slope_a * RPlan::u + y_intersect_b ) )
+                return true;
+        }
     }
     return false;
 }
+//----------------------------------------------------------------------------------------
 
+//----- RCube ----------------------------------------------------------------------------
+RCube::RCube(Point O, Point A, Point B, Point C, float side)
+{
+    triangle[0] = new RTriangle(O, A, B, side, side);
+
+}
+
+bool RCube::GetIntersection(const Ray & r, float & distance)
+{
+
+}
+//----------------------------------------------------------------------------------------

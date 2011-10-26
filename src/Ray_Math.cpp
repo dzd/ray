@@ -102,6 +102,20 @@ void Matrix3::setAt(int i, int j, float value)
         array[3*(i-1)+j-1] = value;
     }
 }
+//---- Point ---------------------------------------------------------------
+
+Point Point::Translate(Vector & v) const
+{
+    return Point(this->X() + v.X(),
+                 this->Y() + v.Y(),
+                 this->Z() + v.Z());
+
+}
+
+
+//--------------------------------------------------------------------------
+
+
 
 /**
  * Ostream operator

@@ -50,6 +50,7 @@ bool Scene::LoadSceneFile(string filename)
     //test xpath
     AddObjectToScene(doc, "sphere");
     AddObjectToScene(doc, "plan");
+    AddObjectToScene(doc, "triangle");
     AddObjectToScene(doc, "light");
 
     xmlFreeDoc(doc);
@@ -115,7 +116,7 @@ bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
 
                 geo = new RSphere(Point(x, y, z), (unsigned int)value );
             }
-            else if (object_type == "plan")
+            else if (object_type == "plan" or object_type == "triangle")
             {
                 Point *a, *b , *c;
                 GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"1");
@@ -124,14 +125,16 @@ bool Scene::AddObjectToScene(xmlDocPtr doc, string object_type)
                 b = new Point(x,y,z);
                 GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"3");
                 c = new Point(x,y,z);
+                GetFloat(nodeset->nodeTab[i], value, BAD_CAST "doubleface");
 
-                geo = new RPlan(*a, *b, *c);
-            }
-            else if (object_type == "triangle")
-            {
-                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p1");
-                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p2");
-                GetFloatTriplet(nodeset->nodeTab[i], x, y, z, (char*)"p3");
+                if (object_type == "plan")
+                    geo = new RPlan(*a, *b, *c);
+                else if (object_type == "triangle")
+                {
+                    geo = new RTriangle(*a, *b, *c, 1, 1);
+                }
+                else
+                    return false;            
             }
             else if (object_type == "light")
             {

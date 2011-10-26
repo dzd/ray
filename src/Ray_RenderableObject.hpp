@@ -104,11 +104,16 @@ public:
     Vector GetNormal(Point & p);
 };
 
+
+//TODO: implementation issue -> point A and B should recalculated to match actual coordinate (u and v)
 class RTriangle : public RPlan
 {
 protected:
     float coord_u;
     float coord_v;
+
+    float line_slope_a;
+    float y_intersect_b;
 
 public:
     RTriangle(Point O, Point A, Point B, float u, float v);
@@ -117,6 +122,16 @@ public:
 };
 
 class RCube : public Geometry
-{};
+{
+private:
+    Point *O2, *A2, *B2, *C2;
+//    int triangle_number = 12;
+    RTriangle* triangle[12];
+
+public:
+    RCube(Point O, Point A, Point B, Point C, float side);
+
+    bool GetIntersection(const Ray & r, float & distance);
+};
 
 #endif //_RAY_RENDERABLE_OBJ_
